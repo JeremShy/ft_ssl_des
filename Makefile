@@ -12,7 +12,9 @@ SRC_NAME = main.c \
 		sha256_functions_2.c \
 		sha256_compute_buffer.c \
 		parsing.c \
-		bitwise_operations.c
+		bitwise_operations.c \
+		base64_main.c \
+		base64_encode.c
 
 OBJ_PATH = ./obj/
 

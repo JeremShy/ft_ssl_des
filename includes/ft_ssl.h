@@ -19,10 +19,12 @@
 # include <math.h>
 # include <stdio.h>
 
-# define P_OPT	1
-# define Q_OPT	2
-# define R_OPT	4
-# define S_OPT	8
+# define P_OPT	(1 << 0)
+# define Q_OPT	(1 << 1)
+# define R_OPT	(1 << 2)
+# define S_OPT	(1 << 3)
+# define D_OPT	(1 << 4)
+# define E_OPT	(1 << 5)
 
 /*
 	** General
@@ -30,7 +32,7 @@
 
 typedef struct	s_opt
 {
-	int8_t		flags;
+	int32_t		flags;
 	char		*content;
 	int			has_read_something;
 }				t_opt;
@@ -113,5 +115,16 @@ uint64_t		end_conv_64(uint64_t nbr);
 int				sha256_padd_buffer(int original_file_size, int r, char *buffer);
 void			init_constants(uint32_t k[64], uint32_t h[8],
 				uint32_t schedule[64], uint32_t working[8]);
+
+/*
+	** Base64
+*/
+
+typedef struct	s_params_base64 {
+	char alphabet[64];
+}								t_params_base64;
+
+int				main_base64(t_opt *opt);
+void			base64_encode_from_fd(t_opt *opt, int fd);
 
 #endif

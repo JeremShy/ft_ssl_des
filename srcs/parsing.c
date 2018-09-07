@@ -27,8 +27,15 @@ static int	get_option(char *option, t_opt *opt, int (*fun) (t_opt*))
 	i = 1;
 	while (option[i])
 	{
-		if (option[i] >= 'p' && option[i] <= 's')
-			opt->flags |= 1 << (option[i] - 'p');
+		if ((option[i] >= 'p' && option[i] <= 's') || option[i] == 'e' || option[i] == 'd')
+		{
+			if (option[i] >= 'p' && option[i] <= 's')
+				opt->flags |= 1 << (option[i] - 'p');
+			else if (option[i] == 'd')
+					opt->flags |= D_OPT;
+			else if (option[i] == 'e')
+					opt->flags |= E_OPT;
+		}
 		else
 			return (print_str_and_ret("Illegal option: ", option[i]));
 		if (opt->flags & S_OPT)
@@ -101,6 +108,8 @@ int			parse_options(int ac, char **av, t_opt *opt)
 		fun = main_md5;
 	else if (ft_strequ(av[1], "sha256"))
 		fun = main_256;
+	else if (ft_strequ(av[1], "base64"))
+		fun = main_base64;
 	else
 	{
 		ft_putstr_fd("Unknown algorithm: ", 2);
