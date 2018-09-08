@@ -121,10 +121,11 @@ void			init_constants(uint32_t k[64], uint32_t h[8],
 */
 
 typedef struct	s_params_base64 {
-	char alphabet[64];
+	char alphabet[255];
 }								t_params_base64;
 
 int				main_base64(t_opt *opt);
 void			base64_encode_from_fd(t_opt *opt, int fd);
+void			base64_decode_from_fd(t_opt *opt, int fd);
 
 #endif

@@ -14,7 +14,8 @@ SRC_NAME = main.c \
 		parsing.c \
 		bitwise_operations.c \
 		base64_main.c \
-		base64_encode.c
+		base64_encode.c \
+		base64_decode.c
 
 OBJ_PATH = ./obj/
 

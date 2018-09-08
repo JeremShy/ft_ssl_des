@@ -9,5 +9,7 @@ int	main_base64(t_opt *opt)
 	}
 	if (opt->flags & E_OPT)
 		base64_encode_from_fd(opt, 0);
+	else if (opt->flags & E_OPT)
+		base64_decode_from_fd(opt, 0);
 	return (1);
 }
