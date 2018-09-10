@@ -119,7 +119,6 @@ void	base64_encode_from_fd(t_opt *opt, int fd)
 	char	buffer[BUFF_SIZE_BASE64];
 	int		r;
 	int		i;
-	int8_t	equals_nbr;
 
 	init_params(&params);
 	while ((r = read(fd, buffer, BUFF_SIZE_BASE64)) > 0)
