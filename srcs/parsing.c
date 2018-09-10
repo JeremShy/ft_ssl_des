@@ -27,14 +27,18 @@ static int	get_option(char *option, t_opt *opt, int (*fun) (t_opt*))
 	i = 1;
 	while (option[i])
 	{
-		if ((option[i] >= 'p' && option[i] <= 's') || option[i] == 'e' || option[i] == 'd')
+		if ((option[i] >= 'p' && option[i] <= 's') || option[i] == 'e' || option[i] == 'd' || option[i] == 'i' || option[i] == 'o')
 		{
 			if (option[i] >= 'p' && option[i] <= 's')
 				opt->flags |= 1 << (option[i] - 'p');
 			else if (option[i] == 'd')
-					opt->flags |= D_OPT;
+				opt->flags |= D_OPT;
 			else if (option[i] == 'e')
-					opt->flags |= E_OPT;
+				opt->flags |= E_OPT;
+			else if (option[i] == 'i')
+				opt->flags |= I_OPT;
+			else if (option[i] == 'o')
+				opt->flags |= O_OPT;
 		}
 		else
 			return (print_str_and_ret("Illegal option: ", option[i]));
@@ -48,6 +52,16 @@ static int	get_option(char *option, t_opt *opt, int (*fun) (t_opt*))
 			opt->content = NULL;
 			fun(opt);
 			opt->flags &= ~P_OPT;
+		}
+		else if (opt->flags & I_OPT && opt->i_option == NULL)
+		{
+			opt->i_option = option[i + 1] == '\0' ? NULL : option + i + 1;
+			return (1);
+		}
+		else if (opt->flags & O_OPT && opt->o_option == NULL)
+		{
+			opt->o_option = option[i + 1] == '\0' ? NULL : option + i + 1;
+			return (1);
 		}
 		i++;
 	}
@@ -68,6 +82,20 @@ static int	handle_s_opt(t_opt *opt, int (*fun)(t_opt*), char **av, int *i)
 	return (1);
 }
 
+static int		handle_parametrized_opt(char **av, int *i, t_opt *opt)
+{
+	if (!av[*i + 1])
+		return (0);
+	if ((opt->flags & I_OPT) && opt->i_option == NULL)
+		opt->i_option = av[*i + 1];
+	else if ((opt->flags & O_OPT) && opt->o_option == NULL)
+		opt->o_option = av[*i + 1];
+	else
+		return (0);
+	(*i)++;
+	return (1);
+}
+
 static int	do_parsing(char **av, t_opt *opt, int (*fun) (t_opt*))
 {
 	int	i;
@@ -81,6 +109,11 @@ static int	do_parsing(char **av, t_opt *opt, int (*fun) (t_opt*))
 		{
 			if (!get_option(av[i], opt, fun))
 				return (0);
+			if (((opt->flags & I_OPT) && opt->i_option == NULL) || ((opt->flags & O_OPT) && opt->o_option == NULL))
+				{
+					if (handle_parametrized_opt(av, &i, opt) == 0)
+						return (0);
+				}
 			if (opt->flags & S_OPT && handle_s_opt(opt, fun, av, &i) == 0)
 				return (0);
 		}

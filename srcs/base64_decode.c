@@ -28,7 +28,7 @@ static void init_decode_params(t_params_base64 *params)
 	params->alphabet['/'] = 63;
 }
 
-void			decode_four_chars(char buff[4], int fd, t_params_base64 *params)
+void			decode_four_chars(char buff[4], int fd, t_params_base64 *params, int output_fd)
 {
 	char	decoded[3];
 
@@ -38,7 +38,7 @@ void			decode_four_chars(char buff[4], int fd, t_params_base64 *params)
 		buff[0] = params->alphabet[(int)buff[0]];
 		buff[1] = params->alphabet[(int)buff[1]];
 		decoded[0] = (buff[0] << 2) | ((buff[1] & 48) >> 4);
-		ft_putchar(decoded[0]);
+		ft_putchar_fd(decoded[0], output_fd);
 	}
 	else if (buff[3] == '=')
 	{
@@ -49,8 +49,8 @@ void			decode_four_chars(char buff[4], int fd, t_params_base64 *params)
 		buff[2] = params->alphabet[(int)buff[2]];
 		decoded[0] = (buff[0] << 2) | ((buff[1] & 48) >> 4);
 		decoded[1] = ((buff[1] & 15) << 4) | ((buff[2] & 60) >> 2);
-		ft_putchar(decoded[0]);
-		ft_putchar(decoded[1]);
+		ft_putchar_fd(decoded[0], output_fd);
+		ft_putchar_fd(decoded[1], output_fd);
 	}
 	else
 	{
@@ -61,9 +61,9 @@ void			decode_four_chars(char buff[4], int fd, t_params_base64 *params)
 		decoded[0] = (buff[0] << 2) | ((buff[1] & 48) >> 4);
 		decoded[1] = ((buff[1] & 15) << 4) | ((buff[2] & 60) >> 2);
 		decoded[2] = ((buff[2] & 3) << 6) | ((buff[3]));
-		ft_putchar(decoded[0]);
-		ft_putchar(decoded[1]);
-		ft_putchar(decoded[2]);
+		ft_putchar_fd(decoded[0], output_fd);
+		ft_putchar_fd(decoded[1], output_fd);
+		ft_putchar_fd(decoded[2], output_fd);
 	}
 	ft_bzero(buff, 4);
 }
@@ -101,7 +101,7 @@ void			fill_trad_buff(char buffer[BUFF_SIZE_BASE64], char trad_buff[4], int *i, 
 	}
 }
 
-void			base64_decode_from_fd(t_opt *opt, int fd)
+void			base64_decode_from_fd(t_opt *opt, int fd, int output_fd)
 {
 	t_params_base64	params;
 	int	r;
@@ -118,7 +118,7 @@ void			base64_decode_from_fd(t_opt *opt, int fd)
 		{
 			fill_trad_buff(buffer, trad_buff, &i, r);
 			if (trad_buff[3] != '\0')
-				decode_four_chars(trad_buff, fd, &params);
+				decode_four_chars(trad_buff, fd, &params, output_fd);
 		}
 	}
 }

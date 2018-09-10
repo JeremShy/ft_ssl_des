@@ -64,7 +64,7 @@ static int8_t	get_current_value(char buffer[BUFF_SIZE_BASE64], int i)
 	29 / 8 = 3e octet
 */
 
-void	print_last_bits(t_params_base64 *params, char buffer[BUFF_SIZE_BASE64], int i, int r)
+void	print_last_bits(t_params_base64 *params, char buffer[BUFF_SIZE_BASE64], int i, int r, int output_fd)
 {
 	int8_t	tmp[4];
 
@@ -78,19 +78,19 @@ void	print_last_bits(t_params_base64 *params, char buffer[BUFF_SIZE_BASE64], int
 		tmp[0] = buffer[i * 6 / 8];
 		tmp[1] = buffer[i * 6 / 8 + 1];
 		tmp[2] = 0;
-		ft_putchar(params->alphabet[get_current_value((char*)tmp, 0)]);
-		ft_putchar(params->alphabet[get_current_value((char*)tmp, 1)]);
-		ft_putchar(params->alphabet[get_current_value((char*)tmp, 2)]);
-		ft_putchar('=');
+		ft_putchar_fd(params->alphabet[get_current_value((char*)tmp, 0)], output_fd);
+		ft_putchar_fd(params->alphabet[get_current_value((char*)tmp, 1)], output_fd);
+		ft_putchar_fd(params->alphabet[get_current_value((char*)tmp, 2)], output_fd);
+		ft_putchar_fd('=', output_fd);
 	}
 	else if (r * 8 - i * 6 == 8)
 	{
 		tmp[0] = buffer[i * 6 / 8];
 		tmp[1] = 0;
-		ft_putchar(params->alphabet[get_current_value((char*)tmp, 0)]);
-		ft_putchar(params->alphabet[get_current_value((char*)tmp, 1)]);
-		ft_putchar('=');
-		ft_putchar('=');
+		ft_putchar_fd(params->alphabet[get_current_value((char*)tmp, 0)], output_fd);
+		ft_putchar_fd(params->alphabet[get_current_value((char*)tmp, 1)], output_fd);
+		ft_putchar_fd('=', output_fd);
+		ft_putchar_fd('=', output_fd);
 	}
 	else
 	{
@@ -98,7 +98,7 @@ void	print_last_bits(t_params_base64 *params, char buffer[BUFF_SIZE_BASE64], int
 	}
 }
 
-static void	print_four_chars(t_params_base64 *params, char buffer[BUFF_SIZE_BASE64], int *i)
+static void	print_four_chars(t_params_base64 *params, char buffer[BUFF_SIZE_BASE64], int *i, int output_fd)
 {
 	int	j;
 	int8_t	current_value;
@@ -107,13 +107,13 @@ static void	print_four_chars(t_params_base64 *params, char buffer[BUFF_SIZE_BASE
 	while (j < 4)
 	{
 			current_value = get_current_value(buffer, *i);
-			ft_putchar(params->alphabet[current_value]);
+			ft_putchar_fd(params->alphabet[current_value], output_fd);
 			(*i)++;
 			j++;
 	}
 }
 
-void	base64_encode_from_fd(t_opt *opt, int fd)
+void	base64_encode_from_fd(t_opt *opt, int fd, int output_fd)
 {
 	t_params_base64	params;
 	char	buffer[BUFF_SIZE_BASE64];
@@ -129,16 +129,15 @@ void	base64_encode_from_fd(t_opt *opt, int fd)
 			if (r * 8 - i * 6 < 24)
 				break;
 			else
-				print_four_chars(&params, buffer, &i);
-
+				print_four_chars(&params, buffer, &i, output_fd);
 		}
 		if (r < BUFF_SIZE_BASE64)
 			break;
-		ft_putchar('\n');
+		ft_putchar_fd('\n', output_fd);
 	}
 	if (r < 0)
 		ft_putstr_fd("Error while reading the input.\n", 2);
 	if (r * 8 - i * 6 < 24 && r * 8 - i * 6 != 0)
-		print_last_bits(&params, buffer, i, r);
-	ft_putchar('\n');
+		print_last_bits(&params, buffer, i, r, output_fd);
+	ft_putchar_fd('\n', output_fd);
 }
