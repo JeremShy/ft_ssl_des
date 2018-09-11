@@ -15,7 +15,8 @@ SRC_NAME = main.c \
 		bitwise_operations.c \
 		base64_main.c \
 		base64_encode.c \
-		base64_decode.c
+		base64_decode.c \
+		des_main.c
 
 OBJ_PATH = ./obj/
 
@@ -51,6 +52,10 @@ $(NAME) : $(OBJ)
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 	@mkdir -p $(OBJ_PATH)
 	$(CC) $(CFLAGS) $(INC) -o $@ -c $<
+
+partial_clean:
+	@rm -fv $(OBJ)
+	@rmdir -p $(OBJ_PATH) 2> /dev/null || true
 
 clean:
 	@rm -fv $(OBJ)
