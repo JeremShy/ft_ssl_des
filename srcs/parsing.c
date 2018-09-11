@@ -12,6 +12,21 @@
 
 #include <ft_ssl.h>
 
+static int	has_argument(char c, int (*fun) (t_opt*))
+{
+	if (fun == main_des_ecb || fun == main_des_cbc)
+	{
+		if (c == 'i' || c == 'k' || c == 'o' || c == 'p' || c == 's' || c == 'v')
+			return (1);
+		else
+			return (0);
+	}
+	else if (c == 's' || c == 'i' || c == 'o')
+			return (1);
+		else
+			return (0);
+}
+
 static int	print_str_and_ret(char *str1, char c)
 {
 	ft_putstr_fd(str1, 2);
@@ -27,7 +42,7 @@ static int	get_option(char *option, t_opt *opt, int (*fun) (t_opt*))
 	i = 1;
 	while (option[i])
 	{
-		if ((option[i] >= 'p' && option[i] <= 's') || option[i] == 'e' || option[i] == 'd' || option[i] == 'i' || option[i] == 'o')
+		if ((option[i] >= 'p' && option[i] <= 's') || option[i] == 'e' || option[i] == 'd' || option[i] == 'i' || option[i] == 'o' || option[i] == 'v' || option[i] == 'a')
 		{
 			if (option[i] >= 'p' && option[i] <= 's')
 				opt->flags |= 1 << (option[i] - 'p');
@@ -39,6 +54,10 @@ static int	get_option(char *option, t_opt *opt, int (*fun) (t_opt*))
 				opt->flags |= I_OPT;
 			else if (option[i] == 'o')
 				opt->flags |= O_OPT;
+			else if (option[i] == 'v')
+				opt->flags |= A_OPT;
+			else if (option[i] == 'a')
+				opt->flags |= A_OPT;
 		}
 		else
 			return (print_str_and_ret("Illegal option: ", option[i]));
@@ -47,7 +66,7 @@ static int	get_option(char *option, t_opt *opt, int (*fun) (t_opt*))
 			opt->content = option[i + 1] == '\0' ? NULL : option + i + 1;
 			return (1);
 		}
-		else if (opt->flags & P_OPT)
+		else if (opt->flags & P_OPT && (has_argument('p', fun)))
 		{
 			opt->content = NULL;
 			fun(opt);
@@ -56,6 +75,21 @@ static int	get_option(char *option, t_opt *opt, int (*fun) (t_opt*))
 		else if (opt->flags & I_OPT && opt->i_option == NULL)
 		{
 			opt->i_option = option[i + 1] == '\0' ? NULL : option + i + 1;
+			return (1);
+		}
+		else if (opt->flags & O_OPT && opt->o_option == NULL)
+		{
+			opt->o_option = option[i + 1] == '\0' ? NULL : option + i + 1;
+			return (1);
+		}
+		else if (opt->flags & P_OPT && opt->p_option == NULL && has_argument('p', fun))
+		{
+			opt->p_option = option[i + 1] == '\0' ? NULL : option + i + 1;
+			return (1);
+		}
+		else if (opt->flags & S_OPT && opt->s_option == NULL && has_argument('s', fun))
+		{
+			opt->s_option = option[i + 1] == '\0' ? NULL : option + i + 1;
 			return (1);
 		}
 		else if (opt->flags & O_OPT && opt->o_option == NULL)
@@ -143,6 +177,10 @@ int			parse_options(int ac, char **av, t_opt *opt)
 		fun = main_256;
 	else if (ft_strequ(av[1], "base64"))
 		fun = main_base64;
+	else if (ft_strequ(av[1], "des") || ft_strequ(av[1], "des-ecb"))
+		fun = main_des_ecb;
+	else if (ft_strequ(av[1], "des-cbc"))
+		fun = main_des_cbc;
 	else
 	{
 		ft_putstr_fd("Unknown algorithm: ", 2);

@@ -27,6 +27,9 @@
 # define E_OPT	(1 << 5)
 # define I_OPT	(1 << 6)
 # define O_OPT	(1 << 7)
+# define K_OPT	(1 << 8)
+# define V_OPT	(1 << 9)
+# define A_OPT	(1 << 10)
 
 /*
 	** General
@@ -39,6 +42,10 @@ typedef struct	s_opt
 	int			has_read_something;
 	char		*i_option;
 	char		*o_option;
+	char		*k_option;
+	char		*p_option;
+	char		*s_option;
+	char		*v_option;
 }				t_opt;
 
 int				padd_buffer(int original_file_size, int r, char *buffer);
@@ -131,5 +138,12 @@ typedef struct	s_params_base64 {
 int				main_base64(t_opt *opt);
 void			base64_encode_from_fd(t_opt *opt, int fd, int output_fd);
 void			base64_decode_from_fd(t_opt *opt, int fd, int output_fd);
+
+/*
+** des
+*/
+
+int	main_des_ecb(t_opt *opt);
+int	main_des_cbc(t_opt *opt);
 
 #endif
