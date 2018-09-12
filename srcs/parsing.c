@@ -42,7 +42,7 @@ static int	get_option(char *option, t_opt *opt, int (*fun) (t_opt*))
 	i = 1;
 	while (option[i])
 	{
-		if ((option[i] >= 'p' && option[i] <= 's') || option[i] == 'e' || option[i] == 'd' || option[i] == 'i' || option[i] == 'o' || option[i] == 'v' || option[i] == 'a')
+		if ((option[i] >= 'p' && option[i] <= 's') || option[i] == 'e' || option[i] == 'd' || option[i] == 'i' || option[i] == 'o' || option[i] == 'v' || option[i] == 'a' || option[i] == 'k')
 		{
 			if (option[i] >= 'p' && option[i] <= 's')
 				opt->flags |= 1 << (option[i] - 'p');
@@ -55,46 +55,48 @@ static int	get_option(char *option, t_opt *opt, int (*fun) (t_opt*))
 			else if (option[i] == 'o')
 				opt->flags |= O_OPT;
 			else if (option[i] == 'v')
-				opt->flags |= A_OPT;
+				opt->flags |= V_OPT;
 			else if (option[i] == 'a')
 				opt->flags |= A_OPT;
+			else if (option[i] == 'k')
+				opt->flags |= K_OPT;
 		}
 		else
 			return (print_str_and_ret("Illegal option: ", option[i]));
-		if (opt->flags & S_OPT)
+		if (opt->flags & S_OPT && (fun == main_md5 || fun == main_256))
 		{
 			opt->content = option[i + 1] == '\0' ? NULL : option + i + 1;
 			return (1);
 		}
-		else if (opt->flags & P_OPT && (has_argument('p', fun)))
+		if (opt->flags & P_OPT && !has_argument('p', fun))
 		{
 			opt->content = NULL;
 			fun(opt);
 			opt->flags &= ~P_OPT;
 		}
-		else if (opt->flags & I_OPT && opt->i_option == NULL)
+		if (opt->flags & I_OPT && opt->i_option == NULL && has_argument('i', fun))
 		{
 			opt->i_option = option[i + 1] == '\0' ? NULL : option + i + 1;
 			return (1);
 		}
-		else if (opt->flags & O_OPT && opt->o_option == NULL)
+		if (opt->flags & O_OPT && opt->o_option == NULL && has_argument('o', fun))
 		{
 			opt->o_option = option[i + 1] == '\0' ? NULL : option + i + 1;
 			return (1);
 		}
-		else if (opt->flags & P_OPT && opt->p_option == NULL && has_argument('p', fun))
+		if (opt->flags & P_OPT && opt->p_option == NULL && has_argument('p', fun))
 		{
 			opt->p_option = option[i + 1] == '\0' ? NULL : option + i + 1;
 			return (1);
 		}
-		else if (opt->flags & S_OPT && opt->s_option == NULL && has_argument('s', fun))
+		if (opt->flags & S_OPT && opt->s_option == NULL && has_argument('s', fun))
 		{
 			opt->s_option = option[i + 1] == '\0' ? NULL : option + i + 1;
 			return (1);
 		}
-		else if (opt->flags & O_OPT && opt->o_option == NULL)
+		if (opt->flags & K_OPT && opt->s_option == NULL && has_argument('k', fun))
 		{
-			opt->o_option = option[i + 1] == '\0' ? NULL : option + i + 1;
+			opt->k_option = option[i + 1] == '\0' ? NULL : option + i + 1;
 			return (1);
 		}
 		i++;
@@ -116,17 +118,51 @@ static int	handle_s_opt(t_opt *opt, int (*fun)(t_opt*), char **av, int *i)
 	return (1);
 }
 
-static int		handle_parametrized_opt(char **av, int *i, t_opt *opt)
+static int		handle_parametrized_opt(char **av, int *i, t_opt *opt, int (*fun)(t_opt*))
 {
-	if (!av[*i + 1])
-		return (0);
+	char *str;
+
+	str = av[*i + 1];
 	if ((opt->flags & I_OPT) && opt->i_option == NULL)
-		opt->i_option = av[*i + 1];
+	{
+		if (!str)
+			return (0);
+		opt->i_option = str;
+		(*i)++;
+	}
 	else if ((opt->flags & O_OPT) && opt->o_option == NULL)
-		opt->o_option = av[*i + 1];
-	else
-		return (0);
-	(*i)++;
+	{
+		if (!str)
+			return (0);
+		opt->o_option = str;
+		(*i)++;
+	}
+	else if ((opt->flags & P_OPT) && opt->p_option == NULL)
+	{
+		if (!str)
+			return (0);
+		opt->p_option = str;
+		(*i)++;
+	}
+	else if ((opt->flags & K_OPT) && opt->k_option == NULL)
+	{
+		if (!str)
+			return (0);
+		opt->k_option = str;
+		(*i)++;
+	}
+	else if ((opt->flags & S_OPT))
+	{
+		if (fun == main_md5 || fun == main_256)
+			return (handle_s_opt(opt, fun, av, i));
+		if (has_argument('s', fun) && opt->s_option == NULL)
+		{
+			if (!str)
+				return (0);
+			opt->s_option = str;
+			(*i)++;
+		}
+	}
 	return (1);
 }
 
@@ -143,12 +179,7 @@ static int	do_parsing(char **av, t_opt *opt, int (*fun) (t_opt*))
 		{
 			if (!get_option(av[i], opt, fun))
 				return (0);
-			if (((opt->flags & I_OPT) && opt->i_option == NULL) || ((opt->flags & O_OPT) && opt->o_option == NULL))
-				{
-					if (handle_parametrized_opt(av, &i, opt) == 0)
-						return (0);
-				}
-			if (opt->flags & S_OPT && handle_s_opt(opt, fun, av, &i) == 0)
+			if (!handle_parametrized_opt(av, &i, opt, fun))
 				return (0);
 		}
 		else
