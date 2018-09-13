@@ -18,6 +18,13 @@ uint	cshift(uint nbr, uint s)
 		(((nbr) & ((-1u) << (32 - (s)))) >> (32 - (s))));
 }
 
+void	print_help(void)
+{
+	ft_putstr_fd("\nStandard commands\n\n", 2);
+	ft_putstr_fd("Message Digest commands\nmd5\tsha256\tsha512\n\n", 2);
+	ft_putstr_fd("Cipher commands\nbase64\tdes\tdes-cbc\tdes-ecb\n\n", 2);
+}
+
 void	compute_buffer(t_params_md5 *params, char nbr_du_milieu[4][4],
 	void *buffer)
 {

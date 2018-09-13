@@ -217,6 +217,7 @@ int			parse_options(int ac, char **av, t_opt *opt)
 		ft_putstr_fd("Unknown algorithm: ", 2);
 		ft_putstr_fd(av[1], 2);
 		ft_putstr_fd("\n", 2);
+		print_help();
 		return (0);
 	}
 	if (!do_parsing(av, opt, fun))
