@@ -12,22 +12,22 @@
 
 #include <ft_ssl.h>
 
-uint	f(uint b, uint c, uint d)
+uint	f_md5(uint b, uint c, uint d)
 {
 	return ((b & c) | ((~b) & d));
 }
 
-uint	g(uint b, uint c, uint d)
+uint	g_md5(uint b, uint c, uint d)
 {
 	return ((b & d) | (c & (~d)));
 }
 
-uint	h(uint b, uint c, uint d)
+uint	h_md5(uint b, uint c, uint d)
 {
 	return (b ^ c ^ d);
 }
 
-uint	i(uint b, uint c, uint d)
+uint	i_md5(uint b, uint c, uint d)
 {
 	return (c ^ (b | (~d)));
 }

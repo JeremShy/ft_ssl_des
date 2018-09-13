@@ -26,7 +26,7 @@ int		sha256_padd_buffer(int original_file_size, int r, char *buffer)
 	return (size);
 }
 
-void	init_constants(uint32_t k[64], uint32_t h[8], uint32_t schedule[64],
+void	init_constants_sha256(uint32_t k[64], uint32_t h[8], uint32_t schedule[64],
 	uint32_t working[8])
 {
 	ft_memcpy(k, (uint32_t[64]){0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,

@@ -55,6 +55,8 @@ void			print_result_32(uint buffer[4], t_opt *opt);
 
 int				parse_options(int ac, char **av, t_opt *opt);
 
+void			print_help(void);
+
 /*
 	** MD5
 */
@@ -82,10 +84,10 @@ void			compute_buffer(t_params_md5 *params, char nbr_du_milieu[4][4],
 	void *buffer);
 int				compute_from_string_md5(char *str, t_opt *opt);
 
-uint			f(uint b, uint c, uint d);
-uint			g(uint b, uint c, uint d);
-uint			h(uint b, uint c, uint d);
-uint			i(uint b, uint c, uint d);
+uint			f_md5(uint b, uint c, uint d);
+uint			g_md5(uint b, uint c, uint d);
+uint			h_md5(uint b, uint c, uint d);
+uint			i_md5(uint b, uint c, uint d);
 
 uint			cshift(uint nbr, uint s);
 uint			end_conv_32(uint nbr);
@@ -124,7 +126,7 @@ void			print_result_64(unsigned char buffer[32], t_opt *opt);
 uint64_t		end_conv_64(uint64_t nbr);
 
 int				sha256_padd_buffer(int original_file_size, int r, char *buffer);
-void			init_constants(uint32_t k[64], uint32_t h[8],
+void			init_constants_sha256(uint32_t k[64], uint32_t h[8],
 				uint32_t schedule[64], uint32_t working[8]);
 
 /*
@@ -138,6 +140,12 @@ typedef struct	s_params_base64 {
 int				main_base64(t_opt *opt);
 void			base64_encode_from_fd(t_opt *opt, int fd, int output_fd);
 void			base64_decode_from_fd(t_opt *opt, int fd, int output_fd);
+
+/*
+** sha1
+*/
+
+char	*sha1_encode(char *in, size_t len);
 
 /*
 ** des

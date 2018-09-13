@@ -94,7 +94,7 @@ int			main_256(t_opt *opt)
 	uint32_t		working[8];
 	t_params_sha256	params;
 
-	init_constants(k, h, schedule, working);
+	init_constants_sha256(k, h, schedule, working);
 	params.k = k;
 	params.h = h;
 	params.schedule = schedule;

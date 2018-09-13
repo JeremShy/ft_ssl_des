@@ -35,6 +35,10 @@ int	main_des_ecb(t_opt *opt)
 {
 	printf("Called des_ecb\n");
 	print_opt(opt);
+
+	char	*test = "";
+	sha1_encode(test, 0);
+
 	return (1);
 }
 

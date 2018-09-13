@@ -37,7 +37,7 @@ void	stage1(t_params_md5 *params, char nbr_du_milieu[4][4])
 		params->k = i;
 		params->s = nbr_du_milieu[0][i % 4];
 		params->i = i + 1;
-		functions(params, f, i % 4);
+		functions(params, f_md5, i % 4);
 		i++;
 	}
 }
@@ -53,7 +53,7 @@ void	stage2(t_params_md5 *params, char nbr_du_milieu[4][4])
 		params->k = (params->k + 5) % 16;
 		params->s = nbr_du_milieu[1][i % 4];
 		(params->i)++;
-		functions(params, g, i % 4);
+		functions(params, g_md5, i % 4);
 		i++;
 	}
 }
@@ -69,7 +69,7 @@ void	stage3(t_params_md5 *params, char nbr_du_milieu[4][4])
 		params->k = (params->k + 3) % 16;
 		params->s = nbr_du_milieu[2][i % 4];
 		(params->i)++;
-		functions(params, h, i % 4);
+		functions(params, h_md5, i % 4);
 		i++;
 	}
 }
@@ -85,7 +85,7 @@ void	stage4(t_params_md5 *params, char nbr_du_milieu[4][4])
 		params->k = (params->k + 7) % 16;
 		params->s = nbr_du_milieu[3][j % 4];
 		(params->i)++;
-		functions(params, i, j % 4);
+		functions(params, i_md5, j % 4);
 		j++;
 	}
 }
