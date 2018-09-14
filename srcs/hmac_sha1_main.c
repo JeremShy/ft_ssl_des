@@ -1,5 +1,8 @@
 #include <ft_ssl.h>
 
+# define HASH_LEN 40
+# define BLOCK_LEN 64
+
 char	*hmac_sha1_encode(void *str, int size, char *key)
 {
 	// char	ipad[64];
@@ -9,16 +12,14 @@ char	*hmac_sha1_encode(void *str, int size, char *key)
 	char	*k_opad;
 	char	*file;
 	char	*tmp;
-	size_t	len;
 	int		i;
 
 	// ft_memset(ipad, 0x36, 64);
 	// ft_memset(opad, 0x5C, 64);
-	len = ft_strlen(key) >= 64 ? ft_strlen(key) : 64;
-	k_ipad = malloc(len);
-	k_opad = malloc(len);
+	k_ipad = malloc(BLOCK_LEN);
+	k_opad = malloc(BLOCK_LEN);
 	i = 0;
-	while (i < (len))
+	while (i < (BLOCK_LEN))
 	{
 		if (i < ft_strlen(key))
 		{
@@ -32,15 +33,28 @@ char	*hmac_sha1_encode(void *str, int size, char *key)
 		}
 		i++;
 	}
-	tmp = k_ipad;
-	k_ipad = sha1_encode(k_ipad, len);
+	file = malloc(BLOCK_LEN + size);
+	ft_memcpy(file, k_ipad, BLOCK_LEN);
+	ft_memcpy(file + BLOCK_LEN, str, size);
+
+	tmp = file;
+	file = sha1_encode(file, BLOCK_LEN + size);
 	free(tmp);
-	file = malloc(len);
-	while (i < (len))
-	{
-		file[i] = k_opad | k_ipad | 
-	}
-	return (NULL);
+	free(k_ipad);
+
+	tmp = file;
+	file = malloc(BLOCK_LEN + HASH_LEN);
+	ft_memcpy(file, k_opad, BLOCK_LEN);
+	ft_memcpy(file + BLOCK_LEN, tmp, HASH_LEN);
+	free(tmp);
+
+	tmp = file;
+	file = sha1_encode(file, BLOCK_LEN + HASH_LEN);
+	free(tmp);
+
+	printf("file : %s\n", file);
+
+	return (file);
 }
 
 int	main_hmac_sha1(t_opt *opt)
@@ -74,6 +88,8 @@ int	main_hmac_sha1(t_opt *opt)
 	}
 	else
 		out_fd = 1;
+
+	hmac_sha1_encode("", 0, "");
 
 	return (1);
 }

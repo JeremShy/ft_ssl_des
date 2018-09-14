@@ -228,6 +228,8 @@ int			parse_options(int ac, char **av, t_opt *opt)
 		fun = main_des_cbc;
 	else if (ft_strequ(av[1], "sha1"))
 		fun = main_sha1;
+	else if (ft_strequ(av[1], "hmac-sha1"))
+		fun = main_hmac_sha1;
 	else
 	{
 		ft_putstr_fd("Unknown algorithm: ", 2);
