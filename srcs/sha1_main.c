@@ -18,7 +18,7 @@ void	do_sha1(int in_fd, int out_fd, char *in_filename)
 int	main_sha1(t_opt *opt)
 {
 	int	in_fd;
-	int		out_fd;
+	int	out_fd;
 
 	if (opt->flags & I_OPT)
 	{

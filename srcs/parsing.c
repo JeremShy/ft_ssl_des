@@ -28,6 +28,13 @@ static int	has_argument(char c, int (*fun) (t_opt*))
 		else
 			return (0);
 	}
+	else if (fun == main_hmac_sha1)
+	{
+		if (c == 'i' || c == 'o' || c == 'k')
+			return (1);
+		else 
+			return (0);
+	}
 	else if (c == 's' || c == 'i' || c == 'o')
 			return (1);
 		else

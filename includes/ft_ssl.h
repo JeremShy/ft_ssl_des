@@ -159,4 +159,9 @@ int		main_sha1(t_opt *opt);
 int	main_des_ecb(t_opt *opt);
 int	main_des_cbc(t_opt *opt);
 
+/*
+** hmac
+*/
+int	main_hmac_sha1(t_opt *opt);
+
 #endif

@@ -21,6 +21,7 @@ SRC_NAME = main.c \
 		des_main.c \
 		sha1_enc.c \
 		sha1_main.c \
+		hmac_sha1_main.c
 
 OBJ_PATH = ./obj/
 
