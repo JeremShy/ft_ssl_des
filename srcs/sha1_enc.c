@@ -50,7 +50,6 @@ static	char *sha_padding(void *in, size_t original_len, size_t *size)
 	(*size) = ((original_len / 64 + 1) * 64);
 	if ((*size) - original_len <= 8)
 		(*size) += 64;
-	printf("Padded_size : %lu\n", (*size));
 	if (!(ret = malloc((*size) * sizeof(char))))
 		return (NULL);
 	ft_memcpy(ret, in, original_len);
@@ -70,13 +69,14 @@ static void	compute_round(uint32_t h[5], const uint32_t k[80], void *m)
 	t = 0;
 	while (t < 16)
 	{
-		w[t] = ((uint32_t*)m)[t];
+		w[t] = end_conv_32(((uint32_t*)m)[t]);
 		t++;
 	}
+
 	t = 16;
 	while (t < 80)
 	{
-		w[t] = rotl(1, w[t - 3] ^ w[t - 8] ^ w[t - 14] ^ w[t - 16]); //S^1(W(t-3) XOR W(t-8) XOR W(t-14) XOR W(t-16))
+		w[t] = rotl(1, w[t - 3] ^ w[t - 8] ^ w[t - 14] ^ w[t - 16]);
 		t++;
 	}
 
@@ -88,7 +88,7 @@ static void	compute_round(uint32_t h[5], const uint32_t k[80], void *m)
 	t = 0;
 	while (t < 80)
 	{
-		temp = rotl(5, abcde[0]) + f(t, abcde[1], abcde[2], abcde[3]) + abcde[4] + w[t] + k[t]; //TEMP = S^5(A) + f(t;B,C,D) + E + W(t) + K(t);
+		temp = rotl(5, abcde[0]) + f(t, abcde[1], abcde[2], abcde[3]) + abcde[4] + w[t] + k[t];
 		abcde[4] = abcde[3];
 		abcde[3] = abcde[2];
 		abcde[2] = rotl(30, abcde[1]);
@@ -103,49 +103,27 @@ static void	compute_round(uint32_t h[5], const uint32_t k[80], void *m)
 	h[4] = h[4] + abcde[4];
 }
 
-// static void	compute_round(uint32_t h[5], const uint32_t k[80], void *m)
-// {
-// 	uint32_t		*w;
-// 	size_t	t;
-// 	size_t	s;
-// 	uint32_t		temp;
-// 	uint32_t		abcde[5];
+void	fill_out(char out[41], uint32_t h[5])
+{
+	int	i;
 
-// 	w = (uint32_t*)m;
-// 	abcde[0] = h[0];
-// 	abcde[1] = h[1];
-// 	abcde[2] = h[2];
-// 	abcde[3] = h[3];
-// 	abcde[4] = h[4];
-// 	t = 0;
-// 	while (t <= 79)
-// 	{
-// 		s = t & MASK;
-// 		if (t >= 16)
-// 		{
-// 			w[s] = rotl(1,	w[(s + 13) & MASK] ^
-// 											w[(s + 8) & MASK] ^
-// 											w[(s + 2) & MASK] ^
-// 											w[s]);
-// 		}
-// 		temp = rotl(5, abcde[0]) + f(t, abcde[1], abcde[2], abcde[3]) + abcde[4] + w[s] + k[t]; //TEMP = S^5(A) + f(t;B,C,D) + E + W[s] + K(t);
-// 		abcde[4] = abcde[3];
-// 		abcde[3] = abcde[2];
-// 		abcde[2] = rotl(30, abcde[1]);
-// 		abcde[1] = abcde[0];
-// 		abcde[0] = temp;
-// 		t++;
-// 	}
-// 	h[0] = h[0] + abcde[0];
-// 	h[1] = h[1] + abcde[1];
-// 	h[2] = h[2] + abcde[2];
-// 	h[3] = h[3] + abcde[3];
-// 	h[4] = h[4] + abcde[4];
-// }
-
-/*
-	** Blocks of 512 bits = 64 bytes = 16 words
-*/
+	i = 0;
+	h[0] = end_conv_32(h[0]);
+	h[1] = end_conv_32(h[1]);
+	h[2] = end_conv_32(h[2]);
+	h[3] = end_conv_32(h[3]);
+	h[4] = end_conv_32(h[4]);
+	while (i < 20)
+	{
+		out[i * 2] = ((((char *)h)[i] & 0xf0) >> 4) + '0';
+		out[i * 2] > '9' ? out[i * 2] = out[i * 2] - '9' - 1 + 'a' : 0;
+		out[i * 2 + 1] = (((char *)h)[i] & 0xf) + '0';
+		out[i * 2 + 1] > '9' ?
+			out[i * 2 + 1] = out[i * 2 + 1] - '9' - 1 + 'a' : 0;
+		i++;
+	}
+	out[40] = '\0';
+}
 
 char	*compute_sha1(void *in, size_t len) // Len is in bytes
 {
@@ -154,19 +132,18 @@ char	*compute_sha1(void *in, size_t len) // Len is in bytes
 	uint32_t			k[80];
 	size_t	n;
 
-	if (!(out = (char*)malloc(10 * sizeof(char))))
+	if (!(out = (char*)malloc(41 * sizeof(char))))
 		return NULL;
 
-	printf("Padded_size : %zu\n", len);
 	init_constants(k, h);
 	n = 0;
 	while (n < len / 64)
 	{
 		compute_round(h, k, in + (n * 64));
-		printf("round %zu {block_start : %zu, block_end : %zu}\n", n / 64, n * 64, (n + 1) * 64 - 1);
 		n++;
 	}
-	printf("%08x%08x%08x%08x%08x\n", h[0], h[1], h[2], h[3], h[4]);
+	// printf("%08x%08x%08x%08x%08x\n", h[0], h[1], h[2], h[3], h[4]);
+	fill_out(out, h);
 	free(in);
 	return (out);
 }
@@ -175,8 +152,7 @@ char	*sha1_encode(void *in, size_t len)
 {
 	size_t		padded_size;
 
-	printf("Encoding string [%s], len = %zu\n", (char*)in, len);
-	in = sha_padding(in, len, &padded_size);
-	print_memory(in, padded_size);
+	if (!(in = sha_padding(in, len, &padded_size)))
+		return (NULL);
 	return (compute_sha1(in, padded_size));
 }

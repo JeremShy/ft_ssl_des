@@ -21,7 +21,7 @@ uint	cshift(uint nbr, uint s)
 void	print_help(void)
 {
 	ft_putstr_fd("\nStandard commands\n\n", 2);
-	ft_putstr_fd("Message Digest commands\nmd5\tsha256\tsha512\n\n", 2);
+	ft_putstr_fd("Message Digest commands\nmd5\tsha1\tsha256\tsha512\n\n", 2);
 	ft_putstr_fd("Cipher commands\nbase64\tdes\tdes-cbc\tdes-ecb\n\n", 2);
 }
 

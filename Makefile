@@ -1,5 +1,6 @@
 SRC_NAME = main.c \
 		debug.c \
+		get_file.c \
 		md5_main.c \
 		sha256_main.c \
 		sha256_main_2.c \
@@ -18,7 +19,8 @@ SRC_NAME = main.c \
 		base64_encode.c \
 		base64_decode.c \
 		des_main.c \
-		sha1_enc.c
+		sha1_enc.c \
+		sha1_main.c \
 
 OBJ_PATH = ./obj/
 

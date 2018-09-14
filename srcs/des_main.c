@@ -36,7 +36,7 @@ int	main_des_ecb(t_opt *opt)
 	printf("Called des_ecb\n");
 	print_opt(opt);
 
-	char	*test = "abc";
+	char	*test = "tatic void	init_constants(uint32_t k[80], uint32_t h[5])";
 	sha1_encode(test, ft_strlen(test));
 
 	return (1);

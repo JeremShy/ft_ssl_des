@@ -21,6 +21,13 @@ static int	has_argument(char c, int (*fun) (t_opt*))
 		else
 			return (0);
 	}
+	else if (fun == main_sha1)
+	{
+		if (c == 'i' || c == 'o')
+			return (1);
+		else
+			return (0);
+	}
 	else if (c == 's' || c == 'i' || c == 'o')
 			return (1);
 		else
@@ -212,6 +219,8 @@ int			parse_options(int ac, char **av, t_opt *opt)
 		fun = main_des_ecb;
 	else if (ft_strequ(av[1], "des-cbc"))
 		fun = main_des_cbc;
+	else if (ft_strequ(av[1], "sha1"))
+		fun = main_sha1;
 	else
 	{
 		ft_putstr_fd("Unknown algorithm: ", 2);

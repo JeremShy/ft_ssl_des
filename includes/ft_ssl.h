@@ -18,6 +18,7 @@
 # include <unistd.h>
 # include <math.h>
 # include <stdio.h>
+# include <sys/mman.h>
 
 # define P_OPT	(1 << 0)
 # define Q_OPT	(1 << 1)
@@ -51,7 +52,8 @@ typedef struct	s_opt
 int				padd_buffer(int original_file_size, int r, char *buffer);
 uint32_t		rotl(uint32_t n, uint32_t x);
 uint32_t		rotr(uint32_t n, uint32_t x);
-void			print_result_32(uint buffer[4], t_opt *opt);
+void				print_result_32(uint buffer[4], t_opt *opt);
+char				*get_file(int fd, int *file_size);
 
 int				parse_options(int ac, char **av, t_opt *opt);
 
@@ -148,6 +150,7 @@ void			base64_decode_from_fd(t_opt *opt, int fd, int output_fd);
 */
 
 char	*sha1_encode(void *in, size_t len);
+int		main_sha1(t_opt *opt);
 
 /*
 ** des
