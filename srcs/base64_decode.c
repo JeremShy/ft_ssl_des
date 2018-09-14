@@ -28,7 +28,7 @@ static void init_decode_params(t_params_base64 *params)
 	params->alphabet['/'] = 63;
 }
 
-void			decode_four_chars(char buff[4], int fd, t_params_base64 *params, int output_fd)
+void			decode_four_chars(char buff[4], t_params_base64 *params, int output_fd)
 {
 	char	decoded[3];
 
@@ -90,7 +90,7 @@ void			fill_trad_buff(char buffer[BUFF_SIZE_BASE64], char trad_buff[4], int *i, 
 	// printf("size_buf : %d\n", size_buf);
 	while (*i < r && size_buf < 4)
 	{
-		tmp = params.alphabet[buffer[*i]];
+		tmp = params.alphabet[(int)buffer[*i]];
 		if (tmp != -1 || buffer[*i] == '=')
 		{
 			// printf("Adding : buffer[%d] = %c in trad_buff[%d]\n", *i, buffer[*i], size_buf);
@@ -118,7 +118,7 @@ void			base64_decode_from_fd(t_opt *opt, int fd, int output_fd)
 		{
 			fill_trad_buff(buffer, trad_buff, &i, r);
 			if (trad_buff[3] != '\0')
-				decode_four_chars(trad_buff, fd, &params, output_fd);
+				decode_four_chars(trad_buff, &params, output_fd);
 		}
 	}
 }

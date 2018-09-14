@@ -1,4 +1,5 @@
 SRC_NAME = main.c \
+		debug.c \
 		md5_main.c \
 		sha256_main.c \
 		sha256_main_2.c \
