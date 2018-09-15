@@ -4,13 +4,16 @@ void	do_sha1(int in_fd, int out_fd, char *in_filename)
 {
 	char	*file;
 	int		in_size;
-	char	*out;
+	uint32_t	*out;
+	char		b[41];
 
 	file = get_file(in_fd, &in_size);
 	out = sha1_encode(file, in_size);
+	bytes_to_char(out, b, 20);
+
 	ft_putstr_fd(in_filename, out_fd);
 	ft_putstr_fd("= ", out_fd);
-	ft_putendl_fd(out, out_fd);
+	ft_putendl_fd(b, out_fd);
 	free(out);
 	free(file);
 }

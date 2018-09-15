@@ -125,16 +125,13 @@ void	fill_out(char out[41], uint32_t h[5])
 	out[40] = '\0';
 }
 
-char	*compute_sha1(void *in, size_t len) // Len is in bytes
+uint32_t	*compute_sha1(void *in, size_t len) // Len is in bytes
 {
-	char		*out;
-	uint32_t			h[5];
 	uint32_t			k[80];
-	size_t	n;
+	size_t				n;
+	uint32_t			*h;
 
-	if (!(out = (char*)malloc(41 * sizeof(char))))
-		return NULL;
-
+	h = (uint32_t*)malloc(5 * sizeof(uint32_t));
 	init_constants(k, h);
 	n = 0;
 	while (n < len / 64)
@@ -143,12 +140,17 @@ char	*compute_sha1(void *in, size_t len) // Len is in bytes
 		n++;
 	}
 	// printf("%08x%08x%08x%08x%08x\n", h[0], h[1], h[2], h[3], h[4]);
-	fill_out(out, h);
-	free(in);
-	return (out);
+	// fill_out(out, h);
+	// free(in);
+	h[0] = end_conv_32(h[0]);
+	h[1] = end_conv_32(h[1]);
+	h[2] = end_conv_32(h[2]);
+	h[3] = end_conv_32(h[3]);
+	h[4] = end_conv_32(h[4]);
+	return (h);
 }
 
-char	*sha1_encode(void *in, size_t len)
+uint32_t	*sha1_encode(void *in, size_t len)
 {
 	size_t		padded_size;
 

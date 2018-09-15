@@ -60,7 +60,7 @@ int				parse_options(int ac, char **av, t_opt *opt);
 void			print_help(void);
 
 void print_memory(char *start, size_t size);
-
+char	*bytes_to_char(uint32_t *in, char *buffer, size_t in_size);
 /*
 	** MD5
 */
@@ -149,8 +149,8 @@ void			base64_decode_from_fd(t_opt *opt, int fd, int output_fd);
 ** sha1
 */
 
-char	*sha1_encode(void *in, size_t len);
-int		main_sha1(t_opt *opt);
+uint32_t	*sha1_encode(void *in, size_t len);
+int				main_sha1(t_opt *opt);
 
 /*
 ** des

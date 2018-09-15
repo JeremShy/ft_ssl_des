@@ -1,18 +1,20 @@
 #include <ft_ssl.h>
 
-# define HASH_LEN 40
+# define HASH_LEN 20
 # define BLOCK_LEN 64
+
+//TODO : Handle key longer than BLOCK_LEN
 
 char	*hmac_sha1_encode(void *str, int size, char *key)
 {
 	// char	ipad[64];
 	// char	opad[64];
-	char	*out;
+	char	out[41];
 	char	*k_ipad;
 	char	*k_opad;
-	char	*file;
-	char	*tmp;
-	int		i;
+	uint32_t	*file;
+	void	*tmp;
+	size_t		i;
 
 	// ft_memset(ipad, 0x36, 64);
 	// ft_memset(opad, 0x5C, 64);
@@ -28,33 +30,38 @@ char	*hmac_sha1_encode(void *str, int size, char *key)
 		}
 		else
 		{
-			k_ipad[i] = 0x36;
-			k_opad[i] = 0x5c;
+			k_ipad[i] = 0 ^ 0x36;
+			k_opad[i] = 0 ^ 0x5c;
 		}
 		i++;
 	}
+
 	file = malloc(BLOCK_LEN + size);
 	ft_memcpy(file, k_ipad, BLOCK_LEN);
-	ft_memcpy(file + BLOCK_LEN, str, size);
-
+	ft_memcpy((void*)file + BLOCK_LEN, str, size);
 	tmp = file;
-	file = sha1_encode(file, BLOCK_LEN + size);
+
+	file = sha1_encode(file, BLOCK_LEN + size); // h((k ^ ipad) || m)
+
 	free(tmp);
 	free(k_ipad);
 
 	tmp = file;
 	file = malloc(BLOCK_LEN + HASH_LEN);
 	ft_memcpy(file, k_opad, BLOCK_LEN);
-	ft_memcpy(file + BLOCK_LEN, tmp, HASH_LEN);
+	ft_memcpy((void*)file + BLOCK_LEN, tmp, HASH_LEN);
+
 	free(tmp);
+	free(k_opad);
 
 	tmp = file;
 	file = sha1_encode(file, BLOCK_LEN + HASH_LEN);
 	free(tmp);
 
-	printf("file : %s\n", file);
+	bytes_to_char(file, out, HASH_LEN);
+	// free(file);
 
-	return (file);
+	return (ft_strdup(out));
 }
 
 int	main_hmac_sha1(t_opt *opt)
@@ -70,7 +77,7 @@ int	main_hmac_sha1(t_opt *opt)
 
 	if (opt->flags & I_OPT)
 	{
-		if (!opt->i_option)
+		if (!opt->i_option)	
 			return (0);
 		in_fd = open(opt->i_option, O_RDONLY);
 		if (in_fd == -1)
@@ -89,7 +96,10 @@ int	main_hmac_sha1(t_opt *opt)
 	else
 		out_fd = 1;
 
-	hmac_sha1_encode("", 0, "");
+	char *out = hmac_sha1_encode("The quick brown fox jumps over the lazy dog\n", 44, "key");
+
+	ft_putendl(out);
+	free(out);
 
 	return (1);
 }
