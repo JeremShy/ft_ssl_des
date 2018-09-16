@@ -89,9 +89,9 @@ int main(int argc, char **argv) {
     if (PKCS5_PBKDF2_HMAC_SHA1(pass, strlen(pass), salt, saltLength, iterations, length, out) != 0) {
         int i;
         for (i = 0; i < length; i++) { 
-            printf("%02x", out[i]); 
+            printf("%02x%s", out[i], (i == length - 1 ? "" : " ")); 
         }
-        printf("\\\n");
+        printf("\n");
     } else {
         fprintf(stderr, "computation failed\n");
     }
