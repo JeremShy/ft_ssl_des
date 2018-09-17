@@ -5,19 +5,13 @@
 
 //TODO : Handle key longer than BLOCK_LEN
 
-char	*hmac_sha1_encode(void *str, int size, unsigned char *key, size_t keylen)
+unsigned char	*hmac_sha1_encode(const void *str, int size, unsigned char *key, size_t keylen)
 {
-	// char	ipad[64];
-	// char	opad[64];
-	char	out[41];
 	char	*k_ipad;
 	char	*k_opad;
 	uint32_t	*file;
 	void	*tmp;
 	size_t		i;
-
-	// ft_memset(ipad, 0x36, 64);
-	// ft_memset(opad, 0x5C, 64);
 
 	if (keylen >= BLOCK_LEN)
 	{
@@ -64,16 +58,14 @@ char	*hmac_sha1_encode(void *str, int size, unsigned char *key, size_t keylen)
 	file = sha1_encode(file, BLOCK_LEN + HASH_LEN);
 	free(tmp);
 
-	// bytes_to_char(file, out, HASH_LEN);
 	return (void*)(file);
-
-	// return (ft_strdup(out));
 }
 
 int	main_hmac_sha1(t_opt *opt)
 {
 	int	in_fd;
 	int	out_fd;
+	char	out[41];
 
 	if (!(opt->flags & K_OPT) || !opt->k_option)
 	{
@@ -102,10 +94,19 @@ int	main_hmac_sha1(t_opt *opt)
 	else
 		out_fd = 1;
 
-	char *out = hmac_sha1_encode("The quick brown fox jumps over the lazy dog\n", 44, (unsigned char *)"key", 3);
+	unsigned char key[100];
+	ft_memset(key, 0xaa, 90);
+	// ft_memcpy(key, "\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19", 25);
+	unsigned char data[100];
+	// ft_memset(data, 0xcd, 50);
+	ft_memcpy(data, "Test With Truncation", 20);
 
+	unsigned char *encoded = hmac_sha1_encode(data, 20, key, 90);
+	bytes_to_char((uint32_t*)encoded, out, 20);
 	ft_putendl(out);
-	free(out);
+	free(encoded);
+
+
 
 	return (1);
 }

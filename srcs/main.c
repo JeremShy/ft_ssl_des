@@ -53,7 +53,7 @@ int		main(int argc, char **argv)
 	}
 
 	char	out[21];
-	t_pbkdf2_params params = {(unsigned char *)"password", strlen("password"), (unsigned char *)"salt", strlen("salt"), 1, 20, out};
+	t_pbkdf2_params params = {(unsigned char *)"passwordPASSWORDpassword", 25, (unsigned char *)"saltSALTsaltSALTsaltSALTsaltSALTsalt", 36, 4096, 25, out};
 	return pbkdf2_hmac_sha1(&params);
 
 	if (!parse_options(argc, argv, &opt))

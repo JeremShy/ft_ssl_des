@@ -22,30 +22,25 @@ F is defined as the exclusive-or sum of the
 void	f(t_pbkdf2_params *params, int cur)
 {
 	int		i;
-	// unsigned char	block[HLEN];
 	unsigned char	**blocks;
 	void		*first_buffer;
+	unsigned char		*ret;
 
 	blocks = malloc(sizeof(unsigned char *) * params->iter);
 
-	i = 0;
-	while (i < params->iter)
+	i = 1;
+	while (i <= params->iter)
 	{
-		if (i == 0)
+		if (i == 1)
 		{
 			first_buffer = malloc(params->salt_len + 4);
 			ft_memcpy(first_buffer, params->salt, params->salt_len);
-			*(uint32_t*)(first_buffer + params->salt_len) = end_conv_32(cur);
-
-			blocks[0] = (unsigned char*)hmac_sha1_encode((void*)params->password, params->pass_len, first_buffer, params->salt_len + 4);
-			print_memory(params->password, params->pass_len);
-			print_memory(first_buffer, params->salt_len + 4);
+			*(uint32_t*)(first_buffer + params->salt_len) = end_conv_32((uint32_t)cur);
+			blocks[0] = (unsigned char*)hmac_sha1_encode(first_buffer, params->salt_len + 4, params->password, params->pass_len);
 			free(first_buffer);
 		}
 		else
-		{
-			blocks[i] = hmac_sha1_encode(params->password, params->pass_len, blocks[i - 1], HLEN);
-		}
+			blocks[i - 1] = hmac_sha1_encode(blocks[i - 2], HLEN, params->password, params->pass_len);
 		i++;
 	}
 	i = 1;
@@ -53,26 +48,36 @@ void	f(t_pbkdf2_params *params, int cur)
 	{
 		int	j;
 		j = 0;
-		while (j < HLEN)
+		while (j < HLEN / 4)
 		{
-			blocks[0][j] ^= (blocks[i])[j];
-			j++;
+			((uint32_t*)blocks[0])[j] ^= ((uint32_t*)blocks[i])[j];
+			j+=1;
 		}
+		free(blocks[i]);
 		i++;
 	}
-	print_memory(blocks[0], HLEN);
+	ret = blocks[0];
+	free(blocks);
+	print_memory(ret, HLEN);
 }
 
 int	pbkdf2_hmac_sha1(t_pbkdf2_params *params)
 {
 	int	l;
 	int	r;
+	int	i;
 
 	l = (int)ceil(params->dklen / (double)HLEN);
 	printf("l : %d\n", l);
 	r = params->dklen - (l - 1) * HLEN;
 	printf("r : %d\n", r);
-	f(params, 1);
+	i = 1;
+
+	while (i <= l)
+	{
+		f(params, i);
+		i++;
+	}
 
 	return (1);
 }

@@ -59,7 +59,7 @@ int				parse_options(int ac, char **av, t_opt *opt);
 
 void			print_help(void);
 
-void print_memory(char *start, size_t size);
+void print_memory(const void *start, size_t size);
 char	*bytes_to_char(uint32_t *in, char *buffer, size_t in_size);
 
 /*
@@ -184,6 +184,6 @@ int	main_des_cbc(t_opt *opt);
 ** hmac
 */
 int		main_hmac_sha1(t_opt *opt);
-char	*hmac_sha1_encode(void *str, int size, unsigned char *key, size_t keylen);
+unsigned char	*hmac_sha1_encode(const void *str, int size, unsigned char *key, size_t keylen);
 
 #endif

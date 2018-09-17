@@ -1,6 +1,6 @@
 #include <ft_ssl.h>
 
-static void	print_as_char(char *start, size_t size, size_t max)
+static void	print_as_char(const char *start, size_t size, size_t max)
 {
 	size_t	i;
 
@@ -17,7 +17,7 @@ static void	print_as_char(char *start, size_t size, size_t max)
 	printf("|");
 }
 
-static void	print_as_bytes(unsigned char *start, size_t size, size_t max)
+static void	print_as_bytes(unsigned const char *start, size_t size, size_t max)
 {
 	size_t	i;
 
@@ -38,7 +38,7 @@ static void	print_as_bytes(unsigned char *start, size_t size, size_t max)
 	}
 }
 
-void print_memory(char *start, size_t size)
+void print_memory(const void *start, size_t size)
 {
 	size_t	i;
 
