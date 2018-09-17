@@ -5,7 +5,7 @@
 
 //TODO : Handle key longer than BLOCK_LEN
 
-char	*hmac_sha1_encode(void *str, int size, char *key)
+char	*hmac_sha1_encode(void *str, int size, unsigned char *key, size_t keylen)
 {
 	// char	ipad[64];
 	// char	opad[64];
@@ -18,12 +18,18 @@ char	*hmac_sha1_encode(void *str, int size, char *key)
 
 	// ft_memset(ipad, 0x36, 64);
 	// ft_memset(opad, 0x5C, 64);
+
+	if (keylen >= BLOCK_LEN)
+	{
+		ft_putendl("You should have handled that.");
+		exit(EXIT_FAILURE);
+	}
 	k_ipad = malloc(BLOCK_LEN);
 	k_opad = malloc(BLOCK_LEN);
 	i = 0;
 	while (i < (BLOCK_LEN))
 	{
-		if (i < ft_strlen(key))
+		if (i < keylen)
 		{
 			k_ipad[i] = key[i] ^ 0x36;
 			k_opad[i] = key[i] ^ 0x5c;
@@ -58,10 +64,10 @@ char	*hmac_sha1_encode(void *str, int size, char *key)
 	file = sha1_encode(file, BLOCK_LEN + HASH_LEN);
 	free(tmp);
 
-	bytes_to_char(file, out, HASH_LEN);
-	// free(file);
+	// bytes_to_char(file, out, HASH_LEN);
+	return (void*)(file);
 
-	return (ft_strdup(out));
+	// return (ft_strdup(out));
 }
 
 int	main_hmac_sha1(t_opt *opt)
@@ -96,7 +102,7 @@ int	main_hmac_sha1(t_opt *opt)
 	else
 		out_fd = 1;
 
-	char *out = hmac_sha1_encode("The quick brown fox jumps over the lazy dog\n", 44, "key");
+	char *out = hmac_sha1_encode("The quick brown fox jumps over the lazy dog\n", 44, (unsigned char *)"key", 3);
 
 	ft_putendl(out);
 	free(out);

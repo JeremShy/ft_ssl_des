@@ -51,6 +51,11 @@ int		main(int argc, char **argv)
 		ft_putstr_fd("Usage : not like this\n", 2);
 		return (1);
 	}
+
+	char	out[21];
+	t_pbkdf2_params params = {(unsigned char *)"password", strlen("password"), (unsigned char *)"salt", strlen("salt"), 1, 20, out};
+	return pbkdf2_hmac_sha1(&params);
+
 	if (!parse_options(argc, argv, &opt))
 		return (2);
 	return (88);

@@ -61,6 +61,27 @@ void			print_help(void);
 
 void print_memory(char *start, size_t size);
 char	*bytes_to_char(uint32_t *in, char *buffer, size_t in_size);
+
+/*
+	** PBKDF2
+*/
+
+typedef struct	s_pbkdf2_params
+{
+	const unsigned char	*password;
+	size_t	pass_len;
+
+	const unsigned char	*salt;
+	size_t	salt_len;
+
+	int	iter;
+	int dklen;
+
+	char	*out;
+}				t_pbkdf2_params;
+
+int	pbkdf2_hmac_sha1(t_pbkdf2_params *params);
+
 /*
 	** MD5
 */
@@ -162,6 +183,7 @@ int	main_des_cbc(t_opt *opt);
 /*
 ** hmac
 */
-int	main_hmac_sha1(t_opt *opt);
+int		main_hmac_sha1(t_opt *opt);
+char	*hmac_sha1_encode(void *str, int size, unsigned char *key, size_t keylen);
 
 #endif
