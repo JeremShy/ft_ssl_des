@@ -184,6 +184,6 @@ int	main_des_cbc(t_opt *opt);
 ** hmac
 */
 int		main_hmac_sha1(t_opt *opt);
-unsigned char	*hmac_sha1_encode(const void *str, int size, unsigned char *key, size_t keylen);
+unsigned char	*hmac_sha1_encode(const void *str, int size, const unsigned char *key, size_t keylen);
 
 #endif

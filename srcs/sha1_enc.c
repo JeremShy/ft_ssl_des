@@ -139,14 +139,12 @@ uint32_t	*compute_sha1(void *in, size_t len) // Len is in bytes
 		compute_round(h, k, in + (n * 64));
 		n++;
 	}
-	// printf("%08x%08x%08x%08x%08x\n", h[0], h[1], h[2], h[3], h[4]);
-	// fill_out(out, h);
-	// free(in);
 	h[0] = end_conv_32(h[0]);
 	h[1] = end_conv_32(h[1]);
 	h[2] = end_conv_32(h[2]);
 	h[3] = end_conv_32(h[3]);
 	h[4] = end_conv_32(h[4]);
+	free(in);
 	return (h);
 }
 

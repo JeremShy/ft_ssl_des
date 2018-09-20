@@ -5,10 +5,10 @@
 
 //TODO : Handle key longer than BLOCK_LEN
 
-unsigned char	*hmac_sha1_encode(const void *str, int size, unsigned char *key, size_t keylen)
+unsigned char	*hmac_sha1_encode(const void *str, int size, const unsigned char *key, size_t keylen)
 {
-	char	*k_ipad;
-	char	*k_opad;
+	char	k_ipad[BLOCK_LEN];
+	char	k_opad[BLOCK_LEN];
 	uint32_t	*file;
 	void	*tmp;
 	size_t		i;
@@ -18,8 +18,6 @@ unsigned char	*hmac_sha1_encode(const void *str, int size, unsigned char *key, s
 		ft_putendl("You should have handled that.");
 		exit(EXIT_FAILURE);
 	}
-	k_ipad = malloc(BLOCK_LEN);
-	k_opad = malloc(BLOCK_LEN);
 	i = 0;
 	while (i < (BLOCK_LEN))
 	{
@@ -44,7 +42,6 @@ unsigned char	*hmac_sha1_encode(const void *str, int size, unsigned char *key, s
 	file = sha1_encode(file, BLOCK_LEN + size); // h((k ^ ipad) || m)
 
 	free(tmp);
-	free(k_ipad);
 
 	tmp = file;
 	file = malloc(BLOCK_LEN + HASH_LEN);
@@ -52,7 +49,6 @@ unsigned char	*hmac_sha1_encode(const void *str, int size, unsigned char *key, s
 	ft_memcpy((void*)file + BLOCK_LEN, tmp, HASH_LEN);
 
 	free(tmp);
-	free(k_opad);
 
 	tmp = file;
 	file = sha1_encode(file, BLOCK_LEN + HASH_LEN);
@@ -96,9 +92,7 @@ int	main_hmac_sha1(t_opt *opt)
 
 	unsigned char key[100];
 	ft_memset(key, 0xaa, 90);
-	// ft_memcpy(key, "\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19", 25);
 	unsigned char data[100];
-	// ft_memset(data, 0xcd, 50);
 	ft_memcpy(data, "Test With Truncation", 20);
 
 	unsigned char *encoded = hmac_sha1_encode(data, 20, key, 90);

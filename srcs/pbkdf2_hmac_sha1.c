@@ -19,7 +19,7 @@ F is defined as the exclusive-or sum of the
 
 */
 
-void	f(t_pbkdf2_params *params, int cur)
+unsigned char	*f(t_pbkdf2_params *params, int cur)
 {
 	int		i;
 	unsigned char	**blocks;
@@ -27,7 +27,6 @@ void	f(t_pbkdf2_params *params, int cur)
 	unsigned char		*ret;
 
 	blocks = malloc(sizeof(unsigned char *) * params->iter);
-
 	i = 1;
 	while (i <= params->iter)
 	{
@@ -58,7 +57,7 @@ void	f(t_pbkdf2_params *params, int cur)
 	}
 	ret = blocks[0];
 	free(blocks);
-	print_memory(ret, HLEN);
+	return (ret);
 }
 
 int	pbkdf2_hmac_sha1(t_pbkdf2_params *params)
@@ -66,18 +65,26 @@ int	pbkdf2_hmac_sha1(t_pbkdf2_params *params)
 	int	l;
 	int	r;
 	int	i;
+	char	*out;
+	unsigned char	*tmp;
 
+	out = malloc(sizeof(char) * params->dklen + 1);
 	l = (int)ceil(params->dklen / (double)HLEN);
 	printf("l : %d\n", l);
 	r = params->dklen - (l - 1) * HLEN;
 	printf("r : %d\n", r);
 	i = 1;
-
 	while (i <= l)
 	{
-		f(params, i);
+		tmp = f(params, i);
+		ft_memcpy(out + (i - 1) * HLEN, tmp, (i == l ? r : HLEN));
+		free(tmp);
+		printf("%d - %d\n", ((i - 1) * HLEN * 2), (i == l ? HLEN : r));
 		i++;
 	}
+	// printf("out : %s\n", out);
+	print_memory(out, params->dklen);
+	free(out);
 
 	return (1);
 }
