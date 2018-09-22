@@ -82,9 +82,7 @@ int	pbkdf2_hmac_sha1(t_pbkdf2_params *params)
 		printf("%d - %d\n", ((i - 1) * HLEN * 2), (i == l ? HLEN : r));
 		i++;
 	}
-	// printf("out : %s\n", out);
-	print_memory(out, params->dklen);
+	ft_memcpy(params->out, out, params->dklen);
 	free(out);
-
 	return (1);
 }

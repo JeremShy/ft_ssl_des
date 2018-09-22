@@ -19,6 +19,7 @@
 # include <math.h>
 # include <stdio.h>
 # include <sys/mman.h>
+# include <sys/random.h>
 
 # define P_OPT	(1 << 0)
 # define Q_OPT	(1 << 1)

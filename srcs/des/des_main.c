@@ -32,14 +32,39 @@ static void print_opt(t_opt *opt)
 
 static int	compute_des(t_des *des, t_opt *opt)
 {
+		t_pbkdf2_params	params;
+
 	ft_bzero(des, sizeof(t_des));
 	if (opt->flags & K_OPT && opt->k_option)
 	{
-		// Key provided, must do the padding.
+		if (!hex_string_to_bytes(opt->k_option, des->key, 8))
+		{
+			ft_putendl_fd("Error : Problem while parsing the key", 2);
+			return (0);
+		}
 	}
 	else if (opt->flags & P_OPT && opt->p_option)
 	{
-		// password provided, must compute the key from the password using a randomly generated salt, and pbkdf2
+		if (getentropy(des->salt, 8) == -1)
+		{
+			ft_putendl_fd("Error while trying to generate a random salt.", 2);
+			return (0);
+		}
+
+		params.password = (unsigned char *)opt->p_option;
+		params.pass_len = ft_strlen(opt->p_option);
+		params.salt = des->salt;
+		params.salt_len = 8;
+		params.iter = 10000;
+		params.dklen = 8;
+		params.out = (char*)des->key;
+
+		pbkdf2_hmac_sha1(&params);
+
+		ft_putendl("salt :");
+		print_memory(des->salt, 8);
+		ft_putendl("key :");
+		print_memory(des->key, 8);
 		des->salted = 1;
 	}
 	else
@@ -50,8 +75,14 @@ static int	compute_des(t_des *des, t_opt *opt)
 
 	if (opt->flags & I_OPT)
 	{
+		if (!hex_string_to_bytes(opt->i_option, des->iv, 8))
+		{
+			ft_putendl_fd("Error : Problem while parsing the iv", 2);
+			return (0);
+		}
+		ft_putendl("iv :");
+		print_memory(des->iv, 8);
 		des->ived = 1;
-		// IV provided, must fill it.
 	}
 	return (1);
 }
