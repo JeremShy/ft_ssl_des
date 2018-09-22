@@ -1,10 +1,12 @@
 SRC_NAME = \
 		main.c \
-		debug.c \
 		get_file.c \
-		general_operations.c \
 		parsing.c \
-		bitwise_operations.c \
+\
+		tools/bitwise_operations.c \
+		tools/debug.c \
+		tools/general_operations.c \
+		tools/hex_string_to_bytes.c \
 \
 		md5/md5_main.c \
 		md5/md5_parsing.c \
@@ -23,7 +25,7 @@ SRC_NAME = \
 		base64/base64_encode.c \
 		base64/base64_decode.c \
 \
-		des_main.c \
+		des/des_main.c \
 \
 		sha1/sha1_enc.c \
 		sha1/sha1_main.c \
