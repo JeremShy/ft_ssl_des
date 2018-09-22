@@ -72,7 +72,6 @@ static int	compute_des(t_des *des, t_opt *opt)
 		ft_putendl_fd("Error : You must specify at least a password or a key.", 2);
 		return (0);
 	}
-
 	if (opt->flags & I_OPT)
 	{
 		if (!hex_string_to_bytes(opt->i_option, des->iv, 8))

@@ -190,6 +190,23 @@ typedef struct	s_des
 	unsigned char	salt[8];
 }							t_des;
 
+extern const int	g_des_ip[];
+extern const int	g_des_ip_inv[];
+extern const int	g_des_e[];
+extern const int	g_des_one[];
+extern const int	g_des_two[];
+extern const int	g_des_three[];
+extern const int	g_des_four[];
+extern const int	g_des_five[];
+extern const int	g_des_six[];
+extern const int	g_des_seven[];
+extern const int	g_des_eight[];
+extern const int	g_des_iteration_to_left_shift[];
+extern const int	g_des_pc_one_left[];
+extern const int	g_des_pc_one_right[];
+extern const int	g_des_pc_two[];
+extern const int	g_des_p[];
+
 int	main_des_ecb(t_opt *opt);
 int	main_des_cbc(t_opt *opt);
 
