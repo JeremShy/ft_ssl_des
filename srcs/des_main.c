@@ -30,19 +30,55 @@ static void print_opt(t_opt *opt)
 		printf("v_option : None\n");
 }
 
+static int	compute_des(t_des *des, t_opt *opt)
+{
+	ft_bzero(des, sizeof(t_des));
+	if (opt->flags & K_OPT && opt->k_option)
+	{
+		// Key provided, must do the padding.
+	}
+	else if (opt->flags & P_OPT && opt->p_option)
+	{
+		// password provided, must compute the key from the password using a randomly generated salt, and pbkdf2
+		des->salted = 1;
+	}
+	else
+	{
+		ft_putendl_fd("Error : You must specify at least a password or a key.", 2);
+		return (0);
+	}
+
+	if (opt->flags & I_OPT)
+	{
+		des->ived = 1;
+		// IV provided, must fill it.
+	}
+	return (1);
+}
 
 int	main_des_ecb(t_opt *opt)
 {
+	t_des	des;
+
 	printf("Called des_ecb\n");
 	print_opt(opt);
 
-	char	*test = "tatic void	init_constants(uint32_t k[80], uint32_t h[5])";
-	sha1_encode(test, ft_strlen(test));
+	if (!(compute_des(&des, opt)))
+		return (0);
 
 	return (1);
 }
 
 int	main_des_cbc(t_opt *opt)
 {
+	t_des	des;
+
+	if (!(compute_des(&des, opt)))
+		return (0);
+	if (!des.ived)
+	{
+		ft_putendl_fd("Error : An IV must be specified for the cbc mode to work.", 2);
+		return (0);
+	}
 	return (1);
 }

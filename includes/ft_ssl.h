@@ -177,6 +177,17 @@ int				main_sha1(t_opt *opt);
 ** des
 */
 
+typedef struct	s_des
+{
+	unsigned char	key[8];
+
+	uint8_t				ived;
+	unsigned char	iv[8];
+
+	uint8_t				salted;
+	unsigned char	salt[8];
+}							t_des;
+
 int	main_des_ecb(t_opt *opt);
 int	main_des_cbc(t_opt *opt);
 

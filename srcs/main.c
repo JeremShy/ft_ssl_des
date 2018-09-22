@@ -52,10 +52,6 @@ int		main(int argc, char **argv)
 		return (1);
 	}
 
-	char	out[21];
-	t_pbkdf2_params params = {(unsigned char *)"p", 1, (unsigned char *)"27DC6E45BD985A16", 16, 1024, 16, out};
-	return pbkdf2_hmac_sha1(&params);
-
 	if (!parse_options(argc, argv, &opt))
 		return (2);
 	return (88);
