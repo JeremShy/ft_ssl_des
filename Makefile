@@ -1,28 +1,36 @@
-SRC_NAME = main.c \
+SRC_NAME = \
+		main.c \
 		debug.c \
 		get_file.c \
-		md5_main.c \
-		sha256_main.c \
-		sha256_main_2.c \
-		md5_parsing.c \
-		md5_parsing_2.c \
-		md5_stages.c \
-		md5_fghi.c \
-		md5_init.c \
 		general_operations.c \
-		sha256_functions.c \
-		sha256_functions_2.c \
-		sha256_compute_buffer.c \
 		parsing.c \
 		bitwise_operations.c \
-		base64_main.c \
-		base64_encode.c \
-		base64_decode.c \
+\
+		md5/md5_main.c \
+		md5/md5_parsing.c \
+		md5/md5_parsing_2.c \
+		md5/md5_stages.c \
+		md5/md5_fghi.c \
+		md5/md5_init.c \
+\
+		sha256/sha256_main.c \
+		sha256/sha256_main_2.c \
+		sha256/sha256_functions.c \
+		sha256/sha256_functions_2.c \
+		sha256/sha256_compute_buffer.c \
+\
+		base64/base64_main.c \
+		base64/base64_encode.c \
+		base64/base64_decode.c \
+\
 		des_main.c \
-		sha1_enc.c \
-		sha1_main.c \
+\
+		sha1/sha1_enc.c \
+		sha1/sha1_main.c \
+\
 		hmac_sha1_main.c \
 		pbkdf2_hmac_sha1.c
+
 
 OBJ_PATH = ./obj/
 
@@ -56,6 +64,7 @@ $(NAME) : $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -L $(LIB_DIR) $(LFLAGS) -o $@
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
+	@mkdir -p $(shell dirname $@)
 	@mkdir -p $(OBJ_PATH)
 	$(CC) $(CFLAGS) $(INC) -o $@ -c $<
 
