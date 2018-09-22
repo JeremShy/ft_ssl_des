@@ -56,9 +56,9 @@ OBJ_NAME = $(SRC_NAME:.c=.o)
 
 INC = $(addprefix -I,$(INC_PATH))
 
-all : LIB_RULE $(NAME)
+all : $(LIB_DIR) $(NAME)
 
-LIB_RULE:
+$(LIB_DIR):
 	@mkdir -p $(LIB_DIR)
 
 $(NAME) : $(OBJ)
