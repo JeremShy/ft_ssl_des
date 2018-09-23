@@ -10,9 +10,10 @@ def check_hmac_sha1(key, data, expected_output):
 	global current_nfalse
 	global current_test_nbr
 
+	expected_output += "\n"
 	current_test_nbr += 1
 	result = subprocess.run([PROGRAM_NAME, "hmac-sha1", b"-k" + key], stdout=subprocess.PIPE, stderr=subprocess.PIPE, input=data)
-	out = result.stdout.decode("ascii").strip()
+	out = result.stdout.decode("ascii")
 	if result.stderr != b'':
 		print (colored("Error", 'red'), " : Stderr not empty (", result.stderr, ") [", current_test_nbr, "]")
 	elif out != expected_output:

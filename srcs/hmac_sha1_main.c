@@ -95,16 +95,6 @@ int	main_hmac_sha1(t_opt *opt)
 	}
 	else
 		out_fd = 1;
-
-	// unsigned char key[100];
-	// ft_memset(key, 0xaa, 90);
-	// unsigned char data[100];
-	// ft_memcpy(data, "Test With Truncation", 20);
-
-	// unsigned char *encoded = hmac_sha1_encode(data, 20, key, 90);
-	// bytes_to_char((uint32_t*)encoded, out, 20);
-	// ft_putendl(out);
-	// free(encoded);
 	file = get_file(in_fd, &r);
 	hash = hmac_sha1_encode(file, r, (void*)opt->k_option, ft_strlen(opt->k_option));
 	bytes_to_char((void*)hash, str, HASH_LEN);
