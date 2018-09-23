@@ -16,6 +16,7 @@ unsigned char	*hmac_sha1_encode(const void *str, int size, const unsigned char *
 	if (keylen >= BLOCK_LEN)
 	{
 		ft_putendl("You should have handled that.");
+		printf("keylen : %zu\n", keylen);
 		exit(EXIT_FAILURE);
 	}
 	i = 0;
@@ -61,7 +62,10 @@ int	main_hmac_sha1(t_opt *opt)
 {
 	int	in_fd;
 	int	out_fd;
-	char	out[41];
+	char	*file;
+	unsigned char	*hash;
+	char	str[HASH_LEN * 2 + 1];
+	int		r;
 
 	if (!(opt->flags & K_OPT) || !opt->k_option)
 	{
@@ -90,17 +94,21 @@ int	main_hmac_sha1(t_opt *opt)
 	else
 		out_fd = 1;
 
-	unsigned char key[100];
-	ft_memset(key, 0xaa, 90);
-	unsigned char data[100];
-	ft_memcpy(data, "Test With Truncation", 20);
+	// unsigned char key[100];
+	// ft_memset(key, 0xaa, 90);
+	// unsigned char data[100];
+	// ft_memcpy(data, "Test With Truncation", 20);
 
-	unsigned char *encoded = hmac_sha1_encode(data, 20, key, 90);
-	bytes_to_char((uint32_t*)encoded, out, 20);
-	ft_putendl(out);
-	free(encoded);
-
-
+	// unsigned char *encoded = hmac_sha1_encode(data, 20, key, 90);
+	// bytes_to_char((uint32_t*)encoded, out, 20);
+	// ft_putendl(out);
+	// free(encoded);
+	file = get_file(in_fd, &r);
+	hash = hmac_sha1_encode(file, r, (void*)opt->k_option, ft_strlen(opt->k_option));
+	bytes_to_char((void*)hash, str, HASH_LEN);
+	ft_putendl_fd(str, out_fd);
+	free(file);
+	free(hash);
 
 	return (1);
 }

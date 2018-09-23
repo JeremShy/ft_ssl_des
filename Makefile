@@ -26,14 +26,13 @@ SRC_NAME = \
 		base64/base64_decode.c \
 \
 		des/des_main.c \
-		des/des_global.c \
+		des/des_globals.c \
 \
 		sha1/sha1_enc.c \
 		sha1/sha1_main.c \
 \
 		hmac_sha1_main.c \
 		pbkdf2_hmac_sha1.c
-
 
 OBJ_PATH = ./obj/
 
@@ -57,7 +56,14 @@ OBJ_NAME = $(SRC_NAME:.c=.o)
 
 INC = $(addprefix -I,$(INC_PATH))
 
-all : $(LIB_DIR) $(NAME)
+TEST = $(addprefix $(SRC_PATH),tests/tests.py)
+TESTS_NAME = run_tests.py
+
+all : $(LIB_DIR) $(TESTS_NAME) $(NAME)
+
+$(TESTS_NAME):
+	@ln -sv $(TEST) $(TESTS_NAME)
+	@chmod +x $(TEST)
 
 $(LIB_DIR):
 	@mkdir -p $(LIB_DIR)
@@ -77,7 +83,7 @@ partial_clean:
 
 clean:
 	@rm -fv $(OBJ)
-	@rmdir -p $(OBJ_PATH) 2> /dev/null || true
+	@rm -rfv $(OBJ_PATH) 2> /dev/null
 	@make -C libsrcs/libft clean
 
 fclean: clean
