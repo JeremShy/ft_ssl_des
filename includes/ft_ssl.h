@@ -210,6 +210,8 @@ extern const int	g_des_p[];
 int	main_des_ecb(t_opt *opt);
 int	main_des_cbc(t_opt *opt);
 
+uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen);
+
 /*
 ** hmac
 */
