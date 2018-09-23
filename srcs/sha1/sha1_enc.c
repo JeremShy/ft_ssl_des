@@ -43,7 +43,7 @@ static void	init_constants(uint32_t k[80], uint32_t h[5])
 	h[4] = 0xC3D2E1F0;
 }
 
-static	char *sha_padding(void *in, size_t original_len, size_t *size)
+static	char *sha_padding(const void *in, size_t original_len, size_t *size)
 {
 	char		*ret;
 
@@ -59,7 +59,7 @@ static	char *sha_padding(void *in, size_t original_len, size_t *size)
 	return (ret);
 }
 
-static void	compute_round(uint32_t h[5], const uint32_t k[80], void *m)
+static void	compute_round(uint32_t h[5], const uint32_t k[80], const void *m)
 {
 	uint32_t	w[80];
 	uint32_t	t;
@@ -148,11 +148,12 @@ uint32_t	*compute_sha1(void *in, size_t len) // Len is in bytes
 	return (h);
 }
 
-uint32_t	*sha1_encode(void *in, size_t len)
+uint32_t	*sha1_encode(const void *in, size_t len)
 {
 	size_t		padded_size;
+	void			*tmp;
 
-	if (!(in = sha_padding(in, len, &padded_size)))
+	if (!(tmp = sha_padding(in, len, &padded_size)))
 		return (NULL);
-	return (compute_sha1(in, padded_size));
+	return (compute_sha1(tmp, padded_size));
 }

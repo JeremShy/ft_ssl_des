@@ -13,11 +13,12 @@ unsigned char	*hmac_sha1_encode(const void *str, int size, const unsigned char *
 	void	*tmp;
 	size_t		i;
 
+	tmp = NULL;
 	if (keylen >= BLOCK_LEN)
 	{
-		ft_putendl("You should have handled that.");
-		printf("keylen : %zu\n", keylen);
-		exit(EXIT_FAILURE);
+		tmp = sha1_encode(key, keylen);
+		key = tmp;
+		keylen = HASH_LEN;
 	}
 	i = 0;
 	while (i < (BLOCK_LEN))
@@ -34,7 +35,8 @@ unsigned char	*hmac_sha1_encode(const void *str, int size, const unsigned char *
 		}
 		i++;
 	}
-
+	if (tmp)
+		free(tmp);
 	file = malloc(BLOCK_LEN + size);
 	ft_memcpy(file, k_ipad, BLOCK_LEN);
 	ft_memcpy((void*)file + BLOCK_LEN, str, size);

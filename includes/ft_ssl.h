@@ -172,7 +172,7 @@ void			base64_decode_from_fd(t_opt *opt, int fd, int output_fd);
 ** sha1
 */
 
-uint32_t	*sha1_encode(void *in, size_t len);
+uint32_t	*sha1_encode(const void *in, size_t len);
 int				main_sha1(t_opt *opt);
 
 /*
