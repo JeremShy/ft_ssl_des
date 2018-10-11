@@ -30,6 +30,7 @@ def RUN_HMAC_SHA1_TESTS():
 	global current_test_nbr
 
 	print ("HMAC_SHA1 : ")
+
 	current_nfalse = 0;
 	current_test_nbr = 0
 	check_hmac_sha1(b"\x0b" * 20, b"Hi There", "b617318655057264e28bc0b6fb378c8ef146be00")

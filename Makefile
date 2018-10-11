@@ -7,6 +7,7 @@ SRC_NAME = \
 		tools/debug.c \
 		tools/general_operations.c \
 		tools/hex_string_to_bytes.c \
+		tools/permutate.c \
 \
 		md5/md5_main.c \
 		md5/md5_parsing.c \

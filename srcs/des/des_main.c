@@ -50,7 +50,6 @@ static int	compute_des(t_des *des, t_opt *opt)
 			ft_putendl_fd("Error while trying to generate a random salt.", 2);
 			return (0);
 		}
-
 		params.password = (unsigned char *)opt->p_option;
 		params.pass_len = ft_strlen(opt->p_option);
 		params.salt = des->salt;
@@ -58,13 +57,7 @@ static int	compute_des(t_des *des, t_opt *opt)
 		params.iter = 10000;
 		params.dklen = 8;
 		params.out = (char*)des->key;
-
 		pbkdf2_hmac_sha1(&params);
-
-		ft_putendl("salt :");
-		print_memory(des->salt, 8);
-		ft_putendl("key :");
-		print_memory(des->key, 8);
 		des->salted = 1;
 	}
 	else
@@ -95,7 +88,6 @@ int	main_des_ecb(t_opt *opt)
 
 	if (!(compute_des(&des, opt)))
 		return (0);
-
 	return (1);
 }
 
