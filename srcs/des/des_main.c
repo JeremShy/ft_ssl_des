@@ -72,8 +72,8 @@ static int	compute_des(t_des *des, t_opt *opt)
 			ft_putendl_fd("Error : Problem while parsing the iv", 2);
 			return (0);
 		}
-		ft_putendl("iv :");
-		print_memory(des->iv, 8);
+		// ft_putendl("iv :");
+		// print_memory(des->iv, 8);
 		des->ived = 1;
 	}
 	return (1);
@@ -84,7 +84,7 @@ int	main_des_ecb(t_opt *opt)
 	t_des	des;
 
 	printf("Called des_ecb\n");
-	print_opt(opt);
+	// print_opt(opt);
 
 	if (!(compute_des(&des, opt)))
 		return (0);
