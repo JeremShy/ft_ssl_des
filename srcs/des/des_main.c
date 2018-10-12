@@ -82,12 +82,27 @@ static int	compute_des(t_des *des, t_opt *opt)
 int	main_des_ecb(t_opt *opt)
 {
 	t_des	des;
+	char	*data;
+	int		datalen;
+	int		fd;
 
 	printf("Called des_ecb\n");
 	// print_opt(opt);
 
 	if (!(compute_des(&des, opt)))
 		return (0);
+	if ((fd = open(opt->content, O_RDONLY)) == -1)
+	{
+		ft_putendl_fd("Error : Could not open the input file for reading", 2);
+		return (0);
+	}
+	data = get_file(fd, &datalen);
+	if (data == NULL)
+	{
+		ft_putendl_fd("Error: Read error.", 2);
+		return (0);
+	}
+	des_encode(&des, (const uint8_t *)data, datalen, ecb);
 	return (1);
 }
 

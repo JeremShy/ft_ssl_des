@@ -192,6 +192,12 @@ typedef struct	s_des
 	unsigned char	salt[8];
 }							t_des;
 
+typedef enum e_mode
+{
+	ecb,
+	cbc
+}			t_mode;
+
 extern const int	g_des_ip[];
 extern const int	g_des_ip_inv[];
 extern const int	g_des_e[];
@@ -212,7 +218,7 @@ extern const int	g_des_p[];
 int	main_des_ecb(t_opt *opt);
 int	main_des_cbc(t_opt *opt);
 
-uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen);
+uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mode);
 
 /*
 ** hmac
