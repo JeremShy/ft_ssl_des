@@ -29,6 +29,8 @@ SRC_NAME = \
 		des/des_main.c \
 		des/des_globals.c \
 		des/des_encoding.c \
+		des/des_key_schedule.c \
+		des/des_binary_tools.c \
 \
 		sha1/sha1_enc.c \
 		sha1/sha1_main.c \

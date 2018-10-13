@@ -58,6 +58,8 @@ static int	compute_des(t_des *des, t_opt *opt)
 		params.dklen = 8;
 		params.out = (char*)des->key;
 		pbkdf2_hmac_sha1(&params);
+		printf("Key : \n");
+		print_memory(des->key, 8);
 		des->salted = 1;
 	}
 	else

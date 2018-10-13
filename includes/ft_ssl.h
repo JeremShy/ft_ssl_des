@@ -18,6 +18,7 @@
 # include <unistd.h>
 # include <math.h>
 # include <stdio.h>
+# include <stdint.h>
 # include <sys/mman.h>
 # include <sys/random.h>
 
@@ -36,6 +37,11 @@
 /*
 	** General
 */
+
+typedef struct	s_uint48
+{
+	uint64_t	x:48;
+}				t_uint48;
 
 typedef struct	s_opt
 {
@@ -214,11 +220,16 @@ extern const int	g_des_pc_one_left[];
 extern const int	g_des_pc_one_right[];
 extern const int	g_des_pc_two[];
 extern const int	g_des_p[];
+extern const int	g_des_lshift[];
 
 int	main_des_ecb(t_opt *opt);
 int	main_des_cbc(t_opt *opt);
+void	print_block_as_char(uint64_t in);
+void	print_binary(uint8_t in);
+void	compute_key_schedule(t_uint48 out[16], uint64_t key);
 
 uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mode);
+uint32_t rotl_28(uint32_t n, uint32_t x);
 
 /*
 ** hmac

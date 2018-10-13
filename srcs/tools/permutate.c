@@ -30,15 +30,15 @@ int8_t	permutate(const int8_t *in, int8_t *out, const int *permutation,
 		buffer = malloc(size);
 	if (!buffer)
 		return (0);
-	ft_bzero(buffer, size / 8);
+	ft_bzero(buffer, (size + 7) / 8);
 	i = 0;
 	while (i < size)
 	{
-		if ((in[(permutation[i] - 1) / 8] >> ((permutation[i] - 1) % 8)) & 1)
-			buffer[i / 8] |= (1 << i % 8);
+		if ((in[(permutation[i] - 1) / 8] >> (7 - ((permutation[i] - 1) % 8))) & 1)
+			buffer[i / 8] |= (1 << (7 - (i % 8)));
 		i++;
 	}
-	ft_memcpy(out, buffer, size / 8);
+	ft_memcpy(out, buffer, (size + 7) / 8);
 	if (size > 64)
 		free(buffer);
 	return (1);
