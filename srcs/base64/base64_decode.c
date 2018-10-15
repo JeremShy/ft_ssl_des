@@ -109,6 +109,7 @@ void			base64_decode_from_fd(t_opt *opt, int fd, int output_fd)
 	char	trad_buff[4];
 	int		i;
 
+	(void)opt;
 	init_decode_params(&params);
 	ft_bzero(trad_buff, 4);
 	while ((r = read(fd, buffer, BUFF_SIZE_BASE64)) > 0)

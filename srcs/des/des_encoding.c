@@ -19,9 +19,11 @@ uint64_t	encode_block(t_des *des, const uint64_t in, t_uint48 ks[16])
 	uint64_t	out;
 	uint32_t	l;
 	uint32_t	r;
-	uint32_t	lp;
-	uint32_t	rp;
+	// uint32_t	lp;
+	// uint32_t	rp;
 
+	(void)des;
+	(void)ks;
 	printf("size : %zu\n", sizeof(t_uint48));
 	print_block_as_char(in);
 	permutate((const void*)&in, (void *)&out, g_des_ip, 64);
@@ -31,7 +33,7 @@ uint64_t	encode_block(t_des *des, const uint64_t in, t_uint48 ks[16])
 	int	i = 0;
 	while (i < 16)
 	{
-		lp = r;
+		// lp = r;
 		i++;
 	}
 
@@ -46,8 +48,8 @@ uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mod
 	const uint64_t	*in;
 	t_uint48	ks[16];
 
+	(void)mode;
 	compute_key_schedule(ks, *(uint64_t*)des->key);
-
 	printf("About to encode : [%s] - size : %zu\n", data, datalen);
 	if (!(ret = malloc(datalen * sizeof(char))))
 	{

@@ -38,6 +38,11 @@
 	** General
 */
 
+typedef struct	s_uint28
+{
+	uint32_t	x:28;
+}				t_uint28;
+
 typedef struct	s_uint48
 {
 	uint64_t	x:48;
@@ -221,15 +226,20 @@ extern const int	g_des_pc_one_right[];
 extern const int	g_des_pc_two[];
 extern const int	g_des_p[];
 extern const int	g_des_lshift[];
+extern const int	g_des_rotl_1[];
+extern const int	g_des_rotl_2[];
 
 int	main_des_ecb(t_opt *opt);
 int	main_des_cbc(t_opt *opt);
 void	print_block_as_char(uint64_t in);
-void	print_binary(uint8_t in);
+// void	print_binary(uint8_t in);
+void	print_binary(uint8_t *in, size_t size, size_t blocks);
+
 void	compute_key_schedule(t_uint48 out[16], uint64_t key);
 
 uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mode);
 uint32_t rotl_28(uint32_t n, uint32_t x);
+
 
 /*
 ** hmac

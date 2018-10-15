@@ -39,7 +39,6 @@ static int8_t	get_current_value(char buffer[BUFF_SIZE_BASE64], int i)
 	c_debut = buffer[index_debut];
 	c_fin = buffer[index_fin];
 
-	// printf ("i = %d, index_debut = %d, index_fin = %d\n", i, index_debut, index_fin);
 	if (i % 4 == 0)
 		return ((c_debut & 252) >> 2);
 	else if (i % 4 == 1)
@@ -120,6 +119,7 @@ void	base64_encode_from_fd(t_opt *opt, int fd, int output_fd)
 	int		r;
 	int		i;
 
+	(void)opt;
 	init_params(&params);
 	while ((r = read(fd, buffer, BUFF_SIZE_BASE64)) > 0)
 	{

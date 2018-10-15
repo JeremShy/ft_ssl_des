@@ -40,7 +40,7 @@ SRC_NAME = \
 
 OBJ_PATH = ./obj/
 
-INC_PATH = ./includes ./libsrcs/libft/includes/
+INC_PATH = ./includes ./libsrcs/libft/includes/ ./libsrcs/vs_printf/includes/
 
 SRC_PATH = ./srcs/
 
@@ -49,7 +49,7 @@ NAME = ft_ssl
 CC = gcc
 CFLAGS =  -Wextra -Wall -g
 # CFLAGS =  -Wextra -Wall -Werror -g
-LFLAGS = -lft
+LFLAGS = -lft -lftprintf
 LIB_DIR=./lib/
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
@@ -74,6 +74,7 @@ $(LIB_DIR):
 
 $(NAME) : $(OBJ)
 	make -C libsrcs/libft
+	make -C libsrcs/vs_printf
 	$(CC) $(CFLAGS) $(OBJ) -L $(LIB_DIR) $(LFLAGS) -o $@
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
@@ -89,10 +90,12 @@ clean:
 	@rm -fv $(OBJ)
 	@rm -rfv $(OBJ_PATH) 2> /dev/null
 	@make -C libsrcs/libft clean
+	@make -C libsrcs/vs_printf clean
 
 fclean: clean
 	@rm -fv $(NAME)
 	@make -C libsrcs/libft fclean
+	@make -C libsrcs/vs_printf fclean
 	@rmdir lib 2> /dev/null || true
 
 re: fclean all

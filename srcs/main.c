@@ -46,6 +46,8 @@ int		main(int argc, char **argv)
 {
 	t_opt	opt;
 
+	setvbuf(stdout, NULL, _IONBF, 0);
+
 	if (argc == 1)
 	{
 		ft_putstr_fd("Usage : not like this\n", 2);
