@@ -11,7 +11,7 @@ void	print_block_as_char(uint64_t in)
 
 void	print_half_block_as_char(uint32_t in)
 {
-	printf("block : %c%c%c%c\n", (char)in, *(((char*)&in) + 1), *(((char*)&in) + 2), *(((char*)&in) + 3));
+	printf("half_block : %c%c%c%c\n", (char)in, *(((char*)&in) + 1), *(((char*)&in) + 2), *(((char*)&in) + 3));
 }
 
 uint64_t	encode_block(t_des *des, const uint64_t in, t_uint48 ks[16])
@@ -19,21 +19,39 @@ uint64_t	encode_block(t_des *des, const uint64_t in, t_uint48 ks[16])
 	uint64_t	out;
 	uint32_t	l;
 	uint32_t	r;
-	// uint32_t	lp;
-	// uint32_t	rp;
+	uint32_t	lp;
+	uint32_t	rp;
+	uint64_t	eed;
 
 	(void)des;
 	(void)ks;
 	printf("size : %zu\n", sizeof(t_uint48));
 	print_block_as_char(in);
+	print_binary((void*)&in, 64, 4);
+	printf("\n");
 	permutate((const void*)&in, (void *)&out, g_des_ip, 64);
+	printf("permutated : \n");
+	print_binary((void*)&out, 64, 4);
+	printf("\n");
 
 	l = *(uint32_t*)&out;
 	r = *(((uint32_t*)&out) + 1);
+
+	printf("l : ");
+	print_binary((void*)&l, 32, 4);
+	printf("\n");
+	printf("r : ");
+	print_binary((void*)&r, 32, 4);
+	printf("\n");
 	int	i = 0;
 	while (i < 16)
 	{
-		// lp = r;
+		lp = r;
+		permutate((void*)&r, (void*)&eed, g_des_e, 48);
+		printf("after passing through e : ");
+		print_binary((void*)&eed, 48, 6);
+		printf("\n");
+		exit(0);
 		i++;
 	}
 

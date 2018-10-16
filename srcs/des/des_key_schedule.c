@@ -26,7 +26,7 @@ void print_half_key(uint64_t key)
 	int	i;
 
 	// print_block_as_hex(key);
-	print_binary((void*)&key, 28, 8);
+	print_binary((void*)&key, 28, 7);
 	printf("\n");
 }
 
@@ -39,7 +39,7 @@ void print_key(uint64_t key)
 
 void print_48_key(t_uint48 key)
 {
-	print_binary((void*)&key, 48, 8);
+	print_binary((void*)&key, 48, 6);
 	printf("\n");
 }
 
@@ -47,36 +47,12 @@ t_uint48	calculate_key(uint64_t c, uint64_t d)
 {
 	t_uint48	ret;
 	uint64_t	pair;
-
-	// pair = (c) | (d << );
+	uint64_t	reti;
 	int	i = 0;
-	// print_half_key(d);
-	// print_binary((void*)&d, 56, 8);
-	ft_printf("%r\n", d);
-	printf("\n\n");
-	// while (i < 64)
-	// {
-	// 	pair = pair << 1;
-	// 	// print_binary((void*)&pair, 56, 8);
-	// 	ft_printf("%r\n", pair);
-	// 	i++;
-	// }
-	// exit(0);
-	pair = ((c << 32) | d);
-	print_block_as_hex(d);
-	print_block_as_hex(pair);
 
-	printf("---------------\nc : ");
-	// print_half_key(c);
-	ft_printf("%.32r\n", c);
-	printf("d : ");
-	// print_half_key(d);
-	ft_printf("%.32r\n", d);
-	printf("pair : ");
-	// print_binary((void*)&pair, 56, 28);
-	ft_printf("%r", pair);
-	printf("\n----------------\n");
-
+	pair = c | end_conv_64(end_conv_64(d) >> 28);
+	permutate((void*)&pair, (void*)&reti, g_des_pc_two, 48);
+	ret.x = reti;
 	return (ret);
 }
 
@@ -86,17 +62,13 @@ void	compute_key_schedule(t_uint48 out[16], uint64_t key)
 	uint32_t	d; // 28 bit
 	size_t		i;
 
+	c = 0;
+	d = 0;
 	(void)out;
 	printf("computing key schedule from key : \n");
 	print_key(key);
-
 	permutate((void*)&key, (void*)&c, g_des_pc_one_left, 28);
 	permutate((void*)&key, (void*)&d, g_des_pc_one_right, 28);
-
-	// printf("Got keys : c[0] :\n");
-	// print_half_key(c);
-	// printf("And : d[0] :\n");
-	// print_half_key(d);
 	i = 0;
 	while (i < 16)
 	{
@@ -112,5 +84,7 @@ void	compute_key_schedule(t_uint48 out[16], uint64_t key)
 		}
 		i++;
 		out[i] = calculate_key(c, d);
+		printf("out[%2zu] : ", i);
+		print_48_key(out[i]);
 	}
 }
