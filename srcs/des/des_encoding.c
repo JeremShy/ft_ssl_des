@@ -74,6 +74,7 @@ void	do_iteration(t_uint48 ks[16], uint32_t *l, uint32_t *r, size_t i)
 		print_binary((void*)&xored, 48, 6);
 		printf("\n");
 	divide_block(blocks, xored);
+	compute_s_box(blocks[0], 0);
 	exit(0);
 
 

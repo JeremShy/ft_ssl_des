@@ -22,7 +22,7 @@ static const int *get_s_box(size_t i)
 		return NULL;
 }
 
-uint32_t	compute_s_box(t_uint48 in, size_t i)
+uint8_t	compute_s_box(uint8_t in, size_t i)
 {
 	const int	*s_box;
 	uint8_t		row;
@@ -30,6 +30,6 @@ uint32_t	compute_s_box(t_uint48 in, size_t i)
 
 	s_box = get_s_box(i);
 	printf("computing s_box %zu for block : ", i);
-	print_binary((void*)&in, 48, 6);
+	print_binary((void*)&in, 8, 8);
 	return (0);
 }
