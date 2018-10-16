@@ -27,9 +27,12 @@ uint8_t	compute_s_box(uint8_t in, size_t i)
 	const int	*s_box;
 	uint8_t		row;
 	uint8_t		col;
+	uint8_t		out;
 
 	s_box = get_s_box(i);
-	printf("computing s_box %zu for block : ", i);
-	print_binary((void*)&in, 8, 8);
-	return (0);
+	row = ((in & 0x20) >> 4) | (in & 1);
+	col = (in & 0x1E) >> 1;
+	out = s_box[row * 16 + col];
+	// ft_printf("out[%d] : %.4r\n", i, out);
+	return (out);
 }

@@ -21,14 +21,7 @@ void	divide_block(uint8_t *out, t_uint48 in)
 
 	mask = 0x3F;
 	in_x = in.x;
-		printf("in_x : ");
-		print_binary((void*)&in_x, 64, 8);
-		printf("\n");
 	in_x = end_conv_64(in_x) >> 16;
-		printf("in_x endian : ");
-		print_binary((void*)&in_x, 64, 6);
-		ft_printf("%\n%r", in_x);
-		printf("\n");
 	ft_bzero(out, 8 * sizeof(char));
 	out[0] = (in_x & (mask << 42)) >> 42;
 	out[1] = (in_x & (mask << 36)) >> 36;
@@ -39,15 +32,14 @@ void	divide_block(uint8_t *out, t_uint48 in)
 	out[6] = (in_x & (mask << 6)) >> 6;
 	out[7] = (in_x & (mask << 0)) >> 0;
 
-	int i = 0;
-	while (i < 8)
-	{
-		printf("out[%d] : ", i);
-		print_binary(&out[i], 8, 8);
-		ft_printf("%.6r", out[i]);
-		printf("\n");
-		i++;
-	}
+	// int i = 0;
+	// while (i < 8)
+	// {
+	// 	printf("out[%d] : ", i);
+	// 	ft_printf("%.6r", out[i]);
+	// 	printf("\n");
+	// 	i++;
+	// }
 }
 
 void	do_iteration(t_uint48 ks[16], uint32_t *l, uint32_t *r, size_t i)
@@ -57,24 +49,53 @@ void	do_iteration(t_uint48 ks[16], uint32_t *l, uint32_t *r, size_t i)
 	t_uint48	eed;
 	t_uint48	xored;
 	uint8_t		blocks[8];
+	uint32_t	p;
 
 	lp = *r;
 
 	permutate((void*)r, (void*)&eed, g_des_e, 48);
 
-		printf("after passing through e : ");
-		print_binary((void*)&eed, 48, 6);
-		printf("\nkey : ");
-		print_binary((void*)&ks[i], 48, 6);
-		printf("\n");
+		// printf("after passing through e : ");
+		// print_binary((void*)&eed, 48, 6);
+		// printf("\nkey : ");
+		// print_binary((void*)&ks[i], 48, 6);
+		// printf("\n");
 
 	xored.x = eed.x ^ ks[i].x;
 
-		printf("xored : ");
-		print_binary((void*)&xored, 48, 6);
-		printf("\n");
+		// printf("xored : ");
+		// print_binary((void*)&xored, 48, 6);
+		// printf("\n");
 	divide_block(blocks, xored);
-	compute_s_box(blocks[0], 0);
+		// printf("\n");
+	int	z = 0;
+	uint32_t	s_box_r = 0;
+	while (z < 8)
+	{
+		s_box_r <<= 4;
+		s_box_r |= compute_s_box(blocks[z], z);
+			// print_binary((void*)&s_box_r, 32, 4);
+			// printf("\n");
+		z++;
+	}
+	s_box_r = end_conv_32(s_box_r);
+		// print_binary((void*)&s_box_r, 32, 4);
+		// printf("\n");
+	permutate((void*)&s_box_r, (void*)&p, g_des_p, 32);
+		printf("p : ");
+		print_binary((void*)&p, 32, 4);
+		printf("\n");
+
+		printf("l : ");
+		print_binary((void*)l, 32, 4);
+		printf("\n");
+
+	rp = p ^ *l;
+
+		printf("r : ");
+		print_binary((void*)&p, 32, 4);
+		printf("\n");
+
 	exit(0);
 
 
