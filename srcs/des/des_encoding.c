@@ -14,47 +14,90 @@ void	print_half_block_as_char(uint32_t in)
 	printf("half_block : %c%c%c%c\n", (char)in, *(((char*)&in) + 1), *(((char*)&in) + 2), *(((char*)&in) + 3));
 }
 
+void	divide_block(uint8_t *out, t_uint48 in)
+{
+	uint64_t	in_x;
+	uint64_t	mask;
+
+	mask = 0x3F;
+	in_x = in.x;
+		printf("in_x : ");
+		print_binary((void*)&in_x, 64, 8);
+		printf("\n");
+	in_x = end_conv_64(in_x) >> 16;
+		printf("in_x endian : ");
+		print_binary((void*)&in_x, 64, 6);
+		ft_printf("%\n%r", in_x);
+		printf("\n");
+	ft_bzero(out, 8 * sizeof(char));
+	out[0] = (in_x & (mask << 42)) >> 42;
+	out[1] = (in_x & (mask << 36)) >> 36;
+	out[2] = (in_x & (mask << 30)) >> 30;
+	out[3] = (in_x & (mask << 24)) >> 24;
+	out[4] = (in_x & (mask << 18)) >> 18;
+	out[5] = (in_x & (mask << 12)) >> 12;
+	out[6] = (in_x & (mask << 6)) >> 6;
+	out[7] = (in_x & (mask << 0)) >> 0;
+
+	int i = 0;
+	while (i < 8)
+	{
+		printf("out[%d] : ", i);
+		print_binary(&out[i], 8, 8);
+		ft_printf("%.6r", out[i]);
+		printf("\n");
+		i++;
+	}
+}
+
+void	do_iteration(t_uint48 ks[16], uint32_t *l, uint32_t *r, size_t i)
+{
+	uint32_t	lp;
+	uint32_t	rp;
+	t_uint48	eed;
+	t_uint48	xored;
+	uint8_t		blocks[8];
+
+	lp = *r;
+
+	permutate((void*)r, (void*)&eed, g_des_e, 48);
+
+		printf("after passing through e : ");
+		print_binary((void*)&eed, 48, 6);
+		printf("\nkey : ");
+		print_binary((void*)&ks[i], 48, 6);
+		printf("\n");
+
+	xored.x = eed.x ^ ks[i].x;
+
+		printf("xored : ");
+		print_binary((void*)&xored, 48, 6);
+		printf("\n");
+	divide_block(blocks, xored);
+	exit(0);
+
+
+	*l = lp;
+	*r = rp;
+}
+
 uint64_t	encode_block(t_des *des, const uint64_t in, t_uint48 ks[16])
 {
 	uint64_t	out;
 	uint32_t	l;
 	uint32_t	r;
-	uint32_t	lp;
-	uint32_t	rp;
-	uint64_t	eed;
 
 	(void)des;
-	(void)ks;
-	printf("size : %zu\n", sizeof(t_uint48));
-	print_block_as_char(in);
-	print_binary((void*)&in, 64, 4);
-	printf("\n");
 	permutate((const void*)&in, (void *)&out, g_des_ip, 64);
-	printf("permutated : \n");
-	print_binary((void*)&out, 64, 4);
-	printf("\n");
 
 	l = *(uint32_t*)&out;
 	r = *(((uint32_t*)&out) + 1);
-
-	printf("l : ");
-	print_binary((void*)&l, 32, 4);
-	printf("\n");
-	printf("r : ");
-	print_binary((void*)&r, 32, 4);
-	printf("\n");
 	int	i = 0;
 	while (i < 16)
 	{
-		lp = r;
-		permutate((void*)&r, (void*)&eed, g_des_e, 48);
-		printf("after passing through e : ");
-		print_binary((void*)&eed, 48, 6);
-		printf("\n");
-		exit(0);
+		do_iteration(ks, &l, &r, i);
 		i++;
 	}
-
 	permutate((const void*)&out, (void *)&out, g_des_ip_inv, 64);
 	return (out);
 }

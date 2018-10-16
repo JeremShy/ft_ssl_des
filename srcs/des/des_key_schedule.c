@@ -83,8 +83,8 @@ void	compute_key_schedule(t_uint48 out[16], uint64_t key)
 			permutate((void*)&d, (void*)&d, g_des_rotl_2, 28);
 		}
 		i++;
-		out[i] = calculate_key(c, d);
-		printf("out[%2zu] : ", i);
-		print_48_key(out[i]);
+		out[i - 1] = calculate_key(c, d);
+		printf("out[%2zu] : ", i - 1);
+		print_48_key(out[i - 1]);
 	}
 }
