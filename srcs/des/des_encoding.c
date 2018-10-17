@@ -82,22 +82,19 @@ void	do_iteration(t_uint48 ks[16], uint32_t *l, uint32_t *r, size_t i)
 		// print_binary((void*)&s_box_r, 32, 4);
 		// printf("\n");
 	permutate((void*)&s_box_r, (void*)&p, g_des_p, 32);
-		printf("p : ");
-		print_binary((void*)&p, 32, 4);
-		printf("\n");
+		// printf("p : ");
+		// print_binary((void*)&p, 32, 4);
+		// printf("\n");
 
-		printf("l : ");
-		print_binary((void*)l, 32, 4);
-		printf("\n");
+		// printf("l : ");
+		// print_binary((void*)l, 32, 4);
+		// printf("\n");
 
 	rp = p ^ *l;
 
-		printf("r : ");
-		print_binary((void*)&p, 32, 4);
-		printf("\n");
-
-	exit(0);
-
+		// printf("r : ");
+		// print_binary((void*)&rp, 32, 4);
+		// printf("\n");
 
 	*l = lp;
 	*r = rp;
@@ -117,10 +114,32 @@ uint64_t	encode_block(t_des *des, const uint64_t in, t_uint48 ks[16])
 	int	i = 0;
 	while (i < 16)
 	{
+			// printf("l%02d : ", i);
+			// print_binary((void*)&l, 32, 4);
+			// printf("\nr%02d : ", i);
+			// print_binary((void*)&r, 32, 4);
+			// printf("\n");
 		do_iteration(ks, &l, &r, i);
 		i++;
 	}
+		// printf("l%02d : ", i);
+		// print_binary((void*)&l, 32, 4);
+		// printf("\nr%02d : ", i);
+		// print_binary((void*)&r, 32, 4);
+		// printf("\n");
+	*(uint32_t*)&out = r;
+	*((uint32_t*)&out + 1) = l;
+		// printf("out : ");
+		// print_binary((void*)&out, 64, 8);
+		// printf("\n");
+
 	permutate((const void*)&out, (void *)&out, g_des_ip_inv, 64);
+		// printf("out : ");
+		// print_binary((void*)&out, 64, 8);
+		// printf("\n");
+
+	// printf("in : %#llX\n", in);
+	// printf("result : %#llX\n", out);
 	return (out);
 }
 
@@ -147,6 +166,8 @@ uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mod
 		n++;
 	}
 	printf("Encoded value : %.*s\n", (int)datalen, (void*)ret);
+	int fd = open("/tmp/a", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	write(fd, ret, datalen);
 	return (NULL);
 }
 
