@@ -8,6 +8,7 @@ SRC_NAME = \
 		tools/general_operations.c \
 		tools/hex_string_to_bytes.c \
 		tools/permutate.c \
+		tools/pkcs5_padding.c \
 \
 		md5/md5_main.c \
 		md5/md5_parsing.c \

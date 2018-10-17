@@ -88,7 +88,7 @@ int	main_des_ecb(t_opt *opt)
 	int		datalen;
 	int		fd;
 
-	printf("Called des_ecb\n");
+	// printf("Called des_ecb\n");
 	// print_opt(opt);
 
 	if (!(compute_des(&des, opt)))
@@ -105,6 +105,7 @@ int	main_des_ecb(t_opt *opt)
 		return (0);
 	}
 	des_encode(&des, (const uint8_t *)data, datalen, ecb);
+	free(data);
 	return (1);
 }
 

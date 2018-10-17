@@ -10,7 +10,16 @@
 uint8_t	*pkcs5_padding(const uint8_t *original_data, size_t *size, size_t padd_multiple)
 {
 	size_t	new_size;
+	uint8_t	*ret;
 
-	new_size = (*size + 1) / padd_multiple * padd_multiple;
-	return (NULL);
+	new_size = ((*size) / padd_multiple + 1) * padd_multiple;
+	if (new_size == *size)
+		new_size += padd_multiple;
+	ret = malloc(*size * sizeof(char));
+	if (!ret)
+		return (NULL);
+	ft_memcpy(ret, original_data, *size);
+	ft_memset(ret + *size, new_size - *size, new_size - *size);
+	*size = new_size;
+	return (ret);
 }

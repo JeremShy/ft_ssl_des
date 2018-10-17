@@ -114,32 +114,12 @@ uint64_t	encode_block(t_des *des, const uint64_t in, t_uint48 ks[16])
 	int	i = 0;
 	while (i < 16)
 	{
-			// printf("l%02d : ", i);
-			// print_binary((void*)&l, 32, 4);
-			// printf("\nr%02d : ", i);
-			// print_binary((void*)&r, 32, 4);
-			// printf("\n");
 		do_iteration(ks, &l, &r, i);
 		i++;
 	}
-		// printf("l%02d : ", i);
-		// print_binary((void*)&l, 32, 4);
-		// printf("\nr%02d : ", i);
-		// print_binary((void*)&r, 32, 4);
-		// printf("\n");
 	*(uint32_t*)&out = r;
 	*((uint32_t*)&out + 1) = l;
-		// printf("out : ");
-		// print_binary((void*)&out, 64, 8);
-		// printf("\n");
-
 	permutate((const void*)&out, (void *)&out, g_des_ip_inv, 64);
-		// printf("out : ");
-		// print_binary((void*)&out, 64, 8);
-		// printf("\n");
-
-	// printf("in : %#llX\n", in);
-	// printf("result : %#llX\n", out);
 	return (out);
 }
 
@@ -151,8 +131,10 @@ uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mod
 	t_uint48	ks[16];
 
 	(void)mode;
+	data = pkcs5_padding(data, &datalen, 8);
 	compute_key_schedule(ks, *(uint64_t*)des->key);
-	printf("About to encode : [%s] - size : %zu\n", data, datalen);
+	// printf("About to encode : (size : %zu)\n", datalen);
+	// print_memory(data, datalen);
 	if (!(ret = malloc(datalen * sizeof(char))))
 	{
 		ft_putendl_fd("Error : Could not allocate enough space.", 2);
@@ -165,9 +147,11 @@ uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mod
 		ret[n] = encode_block(des, in[n], ks);
 		n++;
 	}
-	printf("Encoded value : %.*s\n", (int)datalen, (void*)ret);
+	// printf("Encoded value : \n");
+	// print_memory(ret, datalen);
 	int fd = open("/tmp/a", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	write(fd, ret, datalen);
+	write(1, ret, datalen);
 	return (NULL);
 }
 

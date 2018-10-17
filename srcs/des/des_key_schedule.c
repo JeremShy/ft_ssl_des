@@ -64,9 +64,6 @@ void	compute_key_schedule(t_uint48 out[16], uint64_t key)
 
 	c = 0;
 	d = 0;
-	(void)out;
-	printf("computing key schedule from key : \n");
-	print_key(key);
 	permutate((void*)&key, (void*)&c, g_des_pc_one_left, 28);
 	permutate((void*)&key, (void*)&d, g_des_pc_one_right, 28);
 	i = 0;
@@ -84,7 +81,7 @@ void	compute_key_schedule(t_uint48 out[16], uint64_t key)
 		}
 		i++;
 		out[i - 1] = calculate_key(c, d);
-		printf("out[%2zu] : ", i - 1);
-		print_48_key(out[i - 1]);
+		// printf("out[%2zu] : ", i - 1);
+		// print_48_key(out[i - 1]);
 	}
 }
