@@ -123,6 +123,37 @@ uint64_t	encode_block(t_des *des, const uint64_t in, t_uint48 ks[16])
 	return (out);
 }
 
+void	swap_ks(t_uint48 ks[16])
+{
+	t_uint48	cpy[16];
+
+	ft_memcpy(cpy, ks, 16 * sizeof(t_uint48));
+	ks[0] = cpy[15];
+	ks[1] = cpy[14];
+	ks[2] = cpy[13];
+	ks[3] = cpy[12];
+	ks[4] = cpy[11];
+	ks[5] = cpy[10];
+	ks[6] = cpy[9];
+	ks[7] = cpy[8];
+	ks[8] = cpy[7];
+	ks[9] = cpy[6];
+	ks[10] = cpy[5];
+	ks[11] = cpy[4];
+	ks[12] = cpy[3];
+	ks[13] = cpy[2];
+	ks[14] = cpy[1];
+	ks[15] = cpy[0];
+}
+
+void	remove_padding(const uint8_t *data, size_t *datalen, uint8_t *ret)
+{
+	int	padd_size = data[*datalen - 1];
+
+	ret[*datalen - padd_size] = '\0';
+	*datalen = *datalen - padd_size;
+}
+
 uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mode)
 {
 	size_t				n;
@@ -131,8 +162,20 @@ uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mod
 	t_uint48	ks[16];
 
 	(void)mode;
-	data = pkcs5_padding(data, &datalen, 8);
+	if (des->encode)
+		data = pkcs5_padding(data, &datalen, 8);
+	else if ((datalen / 8) * 8 != datalen)
+	{
+		ft_putendl_fd("Error : The size of the data to decrypt isn't a multiple 64 bit.", 2);
+		return (NULL);
+	}
+
 	compute_key_schedule(ks, *(uint64_t*)des->key);
+	if (des->encode == 0)
+	{
+		// printf("decoding\n");
+		swap_ks(ks);
+	}
 	// printf("About to encode : (size : %zu)\n", datalen);
 	// print_memory(data, datalen);
 	if (!(ret = malloc(datalen * sizeof(char))))
@@ -149,6 +192,10 @@ uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mod
 	}
 	// printf("Encoded value : \n");
 	// print_memory(ret, datalen);
+	if (des->encode == 0)
+	{
+		remove_padding((void*)ret, &datalen, (uint8_t*)ret);
+	}
 	int fd = open("/tmp/a", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	write(fd, ret, datalen);
 	write(1, ret, datalen);

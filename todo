@@ -1,1 +1,2 @@
 ./ft_ssl print error message
+./ft_ssl des -k"133457799BBCDFF1" -e <(echo -n "\x01\x23\x45\x67\x89\xab\xcd\xef")

@@ -32,7 +32,7 @@ static void print_opt(t_opt *opt)
 
 static int	compute_des(t_des *des, t_opt *opt)
 {
-		t_pbkdf2_params	params;
+	t_pbkdf2_params	params;
 
 	ft_bzero(des, sizeof(t_des));
 	if (opt->flags & K_OPT && opt->k_option)
@@ -40,6 +40,7 @@ static int	compute_des(t_des *des, t_opt *opt)
 		if (!hex_string_to_bytes(opt->k_option, des->key, 8))
 		{
 			ft_putendl_fd("Error : Problem while parsing the key", 2);
+			printf("key : %s\n", opt->k_option);
 			return (0);
 		}
 	}
@@ -78,6 +79,21 @@ static int	compute_des(t_des *des, t_opt *opt)
 		// print_memory(des->iv, 8);
 		des->ived = 1;
 	}
+	if (opt->flags & E_OPT && opt->flags & S_OPT)
+	{
+		ft_putendl_fd("Error : You must only specify one of -e or -d", 2);
+		return (0);
+	}
+	if (opt->flags & E_OPT)
+		des->encode = 1;
+	else if (opt->flags & D_OPT)
+		des->encode = 0;
+	else
+	{
+		ft_putendl_fd("Error : You must specify one of -e or -d", 2);
+		return (0);
+	}
+
 	return (1);
 }
 

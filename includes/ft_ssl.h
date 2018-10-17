@@ -198,6 +198,8 @@ typedef struct	s_des
 
 	uint8_t				salted;
 	unsigned char	salt[8];
+
+	uint8_t				encode;
 }							t_des;
 
 typedef enum e_mode
