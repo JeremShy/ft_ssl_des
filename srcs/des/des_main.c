@@ -109,7 +109,9 @@ int	main_des_ecb(t_opt *opt)
 
 	if (!(compute_des(&des, opt)))
 		return (0);
-	if ((fd = open(opt->content, O_RDONLY)) == -1)
+	if (!opt->content)
+		fd = 0;
+	else if ((fd = open(opt->content, O_RDONLY)) == -1)
 	{
 		ft_putendl_fd("Error : Could not open the input file for reading", 2);
 		return (0);
