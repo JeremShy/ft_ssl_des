@@ -31,15 +31,6 @@ void	divide_block(uint8_t *out, t_uint48 in)
 	out[5] = (in_x & (mask << 12)) >> 12;
 	out[6] = (in_x & (mask << 6)) >> 6;
 	out[7] = (in_x & (mask << 0)) >> 0;
-
-	// int i = 0;
-	// while (i < 8)
-	// {
-	// 	printf("out[%d] : ", i);
-	// 	ft_printf("%.6r", out[i]);
-	// 	printf("\n");
-	// 	i++;
-	// }
 }
 
 void	do_iteration(t_uint48 ks[16], uint32_t *l, uint32_t *r, size_t i)
@@ -54,48 +45,19 @@ void	do_iteration(t_uint48 ks[16], uint32_t *l, uint32_t *r, size_t i)
 	lp = *r;
 
 	permutate((void*)r, (void*)&eed, g_des_e, 48);
-
-		// printf("after passing through e : ");
-		// print_binary((void*)&eed, 48, 6);
-		// printf("\nkey : ");
-		// print_binary((void*)&ks[i], 48, 6);
-		// printf("\n");
-
 	xored.x = eed.x ^ ks[i].x;
-
-		// printf("xored : ");
-		// print_binary((void*)&xored, 48, 6);
-		// printf("\n");
 	divide_block(blocks, xored);
-		// printf("\n");
 	int	z = 0;
 	uint32_t	s_box_r = 0;
 	while (z < 8)
 	{
 		s_box_r <<= 4;
 		s_box_r |= compute_s_box(blocks[z], z);
-			// print_binary((void*)&s_box_r, 32, 4);
-			// printf("\n");
 		z++;
 	}
 	s_box_r = end_conv_32(s_box_r);
-		// print_binary((void*)&s_box_r, 32, 4);
-		// printf("\n");
 	permutate((void*)&s_box_r, (void*)&p, g_des_p, 32);
-		// printf("p : ");
-		// print_binary((void*)&p, 32, 4);
-		// printf("\n");
-
-		// printf("l : ");
-		// print_binary((void*)l, 32, 4);
-		// printf("\n");
-
 	rp = p ^ *l;
-
-		// printf("r : ");
-		// print_binary((void*)&rp, 32, 4);
-		// printf("\n");
-
 	*l = lp;
 	*r = rp;
 }
@@ -158,10 +120,12 @@ uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mod
 {
 	size_t				n;
 	uint64_t		*ret;
-	const uint64_t	*in;
+	uint64_t	*in;
+	uint64_t	last_block;
 	t_uint48	ks[16];
 
-	(void)mode;
+	if (mode == cbc)
+		last_block = *(uint64_t*)des->iv;
 	if (des->encode)
 		data = pkcs5_padding(data, &datalen, 8);
 	else if ((datalen / 8) * 8 != datalen)
@@ -173,27 +137,26 @@ uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mod
 	compute_key_schedule(ks, *(uint64_t*)des->key);
 	if (des->encode == 0)
 	{
-		// printf("decoding\n");
 		swap_ks(ks);
 	}
-	// printf("About to encode : (size : %zu)\n", datalen);
-	// print_memory(data, datalen);
 	if (!(ret = malloc(datalen * sizeof(char))))
 	{
 		ft_putendl_fd("Error : Could not allocate enough space.", 2);
 		return (NULL);
 	}
-	in = (const void*)data;
+	in = (void*)data;
 	n = 0;
 	while (n < datalen / 8)
 	{
+		if (mode == cbc)
+			in[n] ^= last_block;
 		ret[n] = encode_block(des, in[n], ks);
+		if (mode == cbc)
+			last_block = ret[n];
 		n++;
 	}
 	if (des->encode == 0)
-	{
 		remove_padding((void*)ret, &datalen, (uint8_t*)ret);
-	}
 	int fd = open("/tmp/a", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	write(fd, ret, datalen);
 	write(1, ret, datalen);

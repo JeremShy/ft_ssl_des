@@ -51,6 +51,33 @@ def check_des_ecb(key, data, expected_output, decrypt, mine = True):
 	current_nfalse += 1
 	return (False)
 
+def check_des_ecb(key, iv, data, expected_output, decrypt, mine = True):
+	global current_nfalse
+	global current_test_nbr
+
+	if (decrypt == True):
+		mode = "-d"
+	else:
+		mode = "-e"
+
+	current_test_nbr += 1
+
+	if (mine == True):
+		result = subprocess.run([PROGRAM_NAME, "des-cbc", mode, b"-k" + key, "-i", iv], stdout=subprocess.PIPE, stderr=subprocess.PIPE, input=data)
+	else:
+		result = subprocess.run(["openssl", "des-cbc", mode, b"-K", key], stdout=subprocess.PIPE, stderr=subprocess.PIPE, input=data)
+
+	if result.stderr != b'':
+		print (colored("Error", 'red'), " : Stderr not empty (", result.stderr, ") [", current_test_nbr, "]")
+	elif result.stdout != expected_output:
+		print (colored("Error", 'red'), " : [", expected_output, "] != [", result.stdout, "] [", current_test_nbr, "]")
+	else:
+		print (colored("OK", 'green'), "[", current_test_nbr, "]")
+		return (True)
+	current_nfalse += 1
+	return (False)
+
+
 def RUN_HMAC_SHA1_TESTS():
 	global current_nfalse
 	global current_test_nbr

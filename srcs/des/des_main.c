@@ -130,6 +130,9 @@ int	main_des_ecb(t_opt *opt)
 int	main_des_cbc(t_opt *opt)
 {
 	t_des	des;
+	char	*data;
+	int		datalen;
+	int		fd;
 
 	if (!(compute_des(&des, opt)))
 		return (0);
@@ -138,5 +141,20 @@ int	main_des_cbc(t_opt *opt)
 		ft_putendl_fd("Error : An IV must be specified for the cbc mode to work.", 2);
 		return (0);
 	}
+	if (!opt->content)
+		fd = 0;
+	else if ((fd = open(opt->content, O_RDONLY)) == -1)
+	{
+		ft_putendl_fd("Error : Could not open the input file for reading", 2);
+		return (0);
+	}
+	data = get_file(fd, &datalen);
+	if (data == NULL)
+	{
+		ft_putendl_fd("Error: Read error.", 2);
+		return (0);
+	}
+	des_encode(&des, (const uint8_t *)data, datalen, cbc);
+	free(data);
 	return (1);
 }
