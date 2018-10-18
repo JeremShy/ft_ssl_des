@@ -51,7 +51,7 @@ def check_des_ecb(key, data, expected_output, decrypt, mine = True):
 	current_nfalse += 1
 	return (False)
 
-def check_des_ecb(key, iv, data, expected_output, decrypt, mine = True):
+def check_des_cbc(key, iv, data, expected_output, decrypt, mine = True):
 	global current_nfalse
 	global current_test_nbr
 
