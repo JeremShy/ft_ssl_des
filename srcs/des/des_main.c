@@ -46,11 +46,13 @@ static int	compute_des(t_des *des, t_opt *opt)
 	}
 	else if (opt->flags & P_OPT && opt->p_option)
 	{
-		if (getentropy(des->salt, 8) == -1)
-		{
-			ft_putendl_fd("Error while trying to generate a random salt.", 2);
-			return (0);
-		}
+		// if (getentropy(des->salt, 8) == -1)
+		// {
+		// 	ft_putendl_fd("Error while trying to generate a random salt.", 2);
+		// 	return (0);
+		// }
+		//BF89737A570578A5
+		ft_memcpy(des->salt, "\x03\xC6\xBB\x25\xD5\xDC\x9A\x97", 8);
 		params.password = (unsigned char *)opt->p_option;
 		params.pass_len = ft_strlen(opt->p_option);
 		params.salt = des->salt;

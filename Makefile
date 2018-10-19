@@ -67,6 +67,9 @@ TESTS_NAME = run_tests.py
 
 all : $(LIB_DIR) $(TESTS_NAME) $(NAME)
 
+test : all
+	./$(TESTS_NAME)
+
 $(TESTS_NAME):
 	@ln -sv $(TEST) $(TESTS_NAME)
 	@chmod +x $(TEST)

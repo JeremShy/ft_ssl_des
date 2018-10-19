@@ -157,8 +157,6 @@ uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mod
 	}
 	if (des->encode == 0)
 		remove_padding((void*)ret, &datalen, (uint8_t*)ret);
-	int fd = open("/tmp/a", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	write(fd, ret, datalen);
 	write(1, ret, datalen);
 	return (NULL);
 }
