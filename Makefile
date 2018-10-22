@@ -37,6 +37,8 @@ SRC_NAME = \
 		sha1/sha1_enc.c \
 		sha1/sha1_main.c \
 \
+		bytes_to_key_md5/bytes_to_key_md5.c \
+\
 		hmac_sha1_main.c \
 		pbkdf2_hmac_sha1.c
 

@@ -248,4 +248,17 @@ uint32_t rotl_28(uint32_t n, uint32_t x);
 int		main_hmac_sha1(t_opt *opt);
 unsigned char	*hmac_sha1_encode(const void *str, int size, const unsigned char *key, size_t keylen);
 
+/*
+** BytesTo_Key md5
+*/
+typedef struct	s_btk_md5_params {
+	const unsigned char	*salt; // Salt MUST be 8 bytes long (or NULL)
+	const unsigned char	*data;
+	size_t				data_len;
+	unsigned char		*key;
+	size_t				key_len;
+	const unsigned char	*iv;
+	size_t				iv_len;
+}				t_btk_md5_params;
+
 #endif
