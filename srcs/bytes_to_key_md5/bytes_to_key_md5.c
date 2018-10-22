@@ -1,6 +1,7 @@
 #include <ft_ssl.h>
 
 // D_i = HASH^count(D_(i-1) || data || salt)
+// sizeof(D_I) = 16
 
 int	bytes_to_key_md5(t_btk_md5_params *params)
 {
