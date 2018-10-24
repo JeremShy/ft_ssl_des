@@ -259,7 +259,7 @@ typedef struct	s_btk_md5_params {
 	size_t				data_len;
 	unsigned char		*key;
 	size_t				key_len;
-	const unsigned char	*iv;
+	unsigned char	*iv;
 	size_t				iv_len;
 }				t_btk_md5_params;
 

@@ -11,9 +11,15 @@ int	bytes_to_key_md5(t_btk_md5_params *params)
 	size_t	salt_len;
 	uint8_t	*rez;
 	int		offset;
+	size_t	size_buffer;
 
-	rez = malloc(params->key_len + params->iv_len);
-	buffer = malloc(16 + params->data_len + 8);
+	if (!(rez = malloc(params->key_len + params->iv_len)))
+		return (0);
+	if (!(buffer = malloc(16 + params->data_len + 8)))
+	{
+		free(rez);
+		return (0);
+	}
 	required_rounds = (params->key_len + params->iv_len) / (16);
 	if ((size_t)required_rounds * 16 != params->key_len + params->iv_len)
 		required_rounds++;
@@ -22,19 +28,32 @@ int	bytes_to_key_md5(t_btk_md5_params *params)
 		salt_len = 8;
 	i = 0;
 	offset = 0;
-	while (i < required_rounds)
+	while (i < required_rounds) 
 	{
 		if (i != 0)
 		{
 			offset = 16;
-			ft_memcpy(rez + i * 16, rez + (i - 1) * 16, 16);
+			ft_memcpy(buffer, rez + (i - 1) * 16, 16);
 		}
-		ft_memcpy(buffer, params->data + offset, params->data_len);
+		ft_memcpy(buffer + offset, params->data, params->data_len);
 		if (params->salt != NULL)
-			ft_memcpy(buffer + params->data_len + offset, params->salt, 8);
+		{
+			ft_memcpy(buffer + offset + params->data_len, params->salt, 8);
+			size_buffer = offset + params->data_len + 8;
+		}
+		else
+			size_buffer = offset + params->data_len;
+		if (!ft_md5(buffer, size_buffer, rez + i * 16))
+		{
+			free(rez);
+			free(buffer);
+			return (0);
+		}
 		i++;
+
 	}
-	// copy rez
+	ft_memcpy(params->key, rez, params->key_len);
+	ft_memcpy((void*)params->iv, rez + params->key_len, params->iv_len);
 	free(rez);
-	return (0);
+	return (1);
 }
