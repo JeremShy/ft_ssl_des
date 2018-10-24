@@ -48,12 +48,28 @@ int		main(int argc, char **argv)
 
 	setvbuf(stdout, NULL, _IONBF, 0);
 
+	// D0C902D1389278E5
+	// t_btk_md5_params params; 
+	// char	key[8];
+	// char	iv[8];
+	// params.data = (void*)"a";
+	// params.data_len = 1;
+	// params.salt = (void*)"\x96\x6C\xAF\xDB\xAD\x50\x5F\xDC";
+	// params.key_len = 8;
+	// params.key = (void*)key;
+	// params.iv_len = 8;
+	// params.iv = (void*)iv;
+	// bytes_to_key_md5(&params);
+	// printf("key : \n");
+	// print_memory(key, 8);
+	// printf("iv : \n");
+	// print_memory(iv, 8);
+
 	if (argc == 1)
 	{
 		ft_putstr_fd("Usage : not like this\n", 2);
 		return (1);
 	}
-
 	if (!parse_options(argc, argv, &opt))
 		return (2);
 	return (88);
