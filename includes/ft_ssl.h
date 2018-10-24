@@ -137,6 +137,8 @@ int				ft_init(t_params_md5 *params, size_t *original_file_size,
 		int *fd, char *filename);
 
 int				main_md5(t_opt *opt);
+int	ft_md5(uint8_t *in, size_t in_len, uint8_t *out);
+
 
 /*
 	** SHA-256
@@ -260,5 +262,7 @@ typedef struct	s_btk_md5_params {
 	const unsigned char	*iv;
 	size_t				iv_len;
 }				t_btk_md5_params;
+
+int	bytes_to_key_md5(t_btk_md5_params *params);
 
 #endif

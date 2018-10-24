@@ -20,3 +20,21 @@ int	main_md5(t_opt *opt)
 		read_file(opt->content, opt);
 	return (1);
 }
+
+// out must be able to countains 16 bytes.
+int	ft_md5(uint8_t *in, size_t in_len, uint8_t *out)
+{
+	t_params_md5	p;
+	void			*buffer;
+	size_t			end_len;
+
+	initialize_buffer(p.buffer);
+	initialize_t(p.t);
+	if (!(buffer = malloc((in_len + 64) * sizeof(char))))
+		return (0);
+	ft_memcpy(buffer, in, in_len);
+	end_len = padd_buffer(0, in_len, buffer);
+	hash_buffer_md5(end_len, &p, buffer);
+	ft_memcpy(out, p.buffer, 16);
+	return (1);
+}
