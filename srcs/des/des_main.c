@@ -36,6 +36,17 @@ static int	compute_des(t_des *des, t_opt *opt)
 	t_btk_md5_params	params;
 
 	ft_bzero(des, sizeof(t_des));
+	if (opt->flags & I_OPT)
+	{
+		if (!hex_string_to_bytes(opt->i_option, des->iv, 8))
+		{
+			ft_putendl_fd("Error : Problem while parsing the iv", 2);
+			return (0);
+		}
+		// ft_putendl("iv :");
+		// print_memory(des->iv, 8);
+		des->ived = 1;
+	}
 	if (opt->flags & K_OPT && opt->k_option)
 	{
 		if (!hex_string_to_bytes(opt->k_option, des->key, 8))
@@ -58,7 +69,10 @@ static int	compute_des(t_des *des, t_opt *opt)
 		params.key = des->key;
 		params.key_len = 8;
 		params.iv = des->iv;
-		params.iv_len = 8;
+		if (des->ived == 0)
+			params.iv_len = 8;
+		else
+			params.iv_len = 0;
 		if (!bytes_to_key_md5(&params))
 		{
 			ft_putendl_fd("Error while trying to generate a key from the password.", 2);
@@ -70,22 +84,12 @@ static int	compute_des(t_des *des, t_opt *opt)
 		// printf("Iv : \n");
 		// print_memory(des->iv, 8);
 		des->salted = 1;
+		des->ived = 1;
 	}
 	else
 	{
 		ft_putendl_fd("Error : You must specify at least a password or a key.", 2);
 		return (0);
-	}
-	if (opt->flags & I_OPT)
-	{
-		if (!hex_string_to_bytes(opt->i_option, des->iv, 8))
-		{
-			ft_putendl_fd("Error : Problem while parsing the iv", 2);
-			return (0);
-		}
-		// ft_putendl("iv :");
-		// print_memory(des->iv, 8);
-		des->ived = 1;
 	}
 	if (opt->flags & E_OPT && opt->flags & S_OPT)
 	{
