@@ -157,6 +157,11 @@ uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mod
 	}
 	if (des->encode == 0)
 		remove_padding((void*)ret, &datalen, (uint8_t*)ret);
+	if (des->salted)
+	{
+		write(1, "Salted__", 8);
+		write(1, des->salt, 8);
+	}
 	write(1, ret, datalen);
 	return (NULL);
 }

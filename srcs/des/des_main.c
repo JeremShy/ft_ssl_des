@@ -32,7 +32,8 @@ static void print_opt(t_opt *opt)
 
 static int	compute_des(t_des *des, t_opt *opt)
 {
-	t_pbkdf2_params	params;
+	// t_pbkdf2_params	params;
+	t_btk_md5_params	params;
 
 	ft_bzero(des, sizeof(t_des));
 	if (opt->flags & K_OPT && opt->k_option)
@@ -46,23 +47,28 @@ static int	compute_des(t_des *des, t_opt *opt)
 	}
 	else if (opt->flags & P_OPT && opt->p_option)
 	{
-		// if (getentropy(des->salt, 8) == -1)
-		// {
-		// 	ft_putendl_fd("Error while trying to generate a random salt.", 2);
-		// 	return (0);
-		// }
-		//BF89737A570578A5
-		ft_memcpy(des->salt, "\x03\xC6\xBB\x25\xD5\xDC\x9A\x97", 8);
-		params.password = (unsigned char *)opt->p_option;
-		params.pass_len = ft_strlen(opt->p_option);
+		if (getentropy(des->salt, 8) == -1)
+		{
+			ft_putendl_fd("Error while trying to generate a random salt.", 2);
+			return (0);
+		}
 		params.salt = des->salt;
-		params.salt_len = 8;
-		params.iter = 10000;
-		params.dklen = 8;
-		params.out = (char*)des->key;
-		pbkdf2_hmac_sha1(&params);
-		printf("Key : \n");
-		print_memory(des->key, 8);
+		params.data = (void*)opt->p_option;
+		params.data_len = ft_strlen(opt->p_option);
+		params.key = des->key;
+		params.key_len = 8;
+		params.iv = des->iv;
+		params.iv_len = 8;
+		if (!bytes_to_key_md5(&params))
+		{
+			ft_putendl_fd("Error while trying to generate a key from the password.", 2);
+		}
+		// printf("Salt : \n");
+		// print_memory(params.salt, 8);
+		// printf("Key : \n");
+		// print_memory(des->key, 8);
+		// printf("Iv : \n");
+		// print_memory(des->iv, 8);
 		des->salted = 1;
 	}
 	else
