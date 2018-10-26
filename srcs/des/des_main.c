@@ -28,11 +28,11 @@ static void print_opt(t_opt *opt)
 		printf("v_option : %s\n", opt->v_option);
 	else
 		printf("v_option : None\n");
+	printf("content : %s\n", opt->content);
 }
 
 static int	compute_des(t_des *des, t_opt *opt)
 {
-	// t_pbkdf2_params	params;
 	t_btk_md5_params	params;
 
 	ft_bzero(des, sizeof(t_des));
@@ -43,8 +43,6 @@ static int	compute_des(t_des *des, t_opt *opt)
 			ft_putendl_fd("Error : Problem while parsing the iv", 2);
 			return (0);
 		}
-		// ft_putendl("iv :");
-		// print_memory(des->iv, 8);
 		des->ived = 1;
 	}
 	if (opt->flags & K_OPT && opt->k_option)
@@ -77,12 +75,6 @@ static int	compute_des(t_des *des, t_opt *opt)
 		{
 			ft_putendl_fd("Error while trying to generate a key from the password.", 2);
 		}
-		// printf("Salt : \n");
-		// print_memory(params.salt, 8);
-		// printf("Key : \n");
-		// print_memory(des->key, 8);
-		// printf("Iv : \n");
-		// print_memory(des->iv, 8);
 		des->salted = 1;
 		des->ived = 1;
 	}
@@ -105,6 +97,21 @@ static int	compute_des(t_des *des, t_opt *opt)
 		ft_putendl_fd("Error : You must specify one of -e or -d", 2);
 		return (0);
 	}
+	if (opt->flags & O_OPT)
+	{
+		if (!opt->o_option)
+		{
+			ft_putendl_fd("Error : Syntax error on -o option", 2);
+			return (0);
+		}
+		if ((des->out_fd = open(opt->o_option, O_WRONLY | O_CREAT | O_TRUNC, 0644)) == -1)
+		{
+			ft_putendl_fd("Error : Could not open output file for writing\n", 2);
+			return (0);
+		}
+	}
+	else
+		des->out_fd = 1;
 
 	return (1);
 }
@@ -115,9 +122,6 @@ int	main_des_ecb(t_opt *opt)
 	char	*data;
 	int		datalen;
 	int		fd;
-
-	// printf("Called des_ecb\n");
-	// print_opt(opt);
 
 	if (!(compute_des(&des, opt)))
 		return (0);
@@ -145,6 +149,7 @@ int	main_des_cbc(t_opt *opt)
 	char	*data;
 	int		datalen;
 	int		fd;
+	int		out_fd;
 
 	if (!(compute_des(&des, opt)))
 		return (0);
@@ -167,6 +172,8 @@ int	main_des_cbc(t_opt *opt)
 		return (0);
 	}
 	des_encode(&des, (const uint8_t *)data, datalen, cbc);
+	if (des.out_fd != 0)
+		close(des.out_fd);
 	free(data);
 	return (1);
 }

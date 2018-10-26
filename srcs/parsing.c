@@ -108,7 +108,7 @@ static int	get_option(char *option, t_opt *opt, int (*fun) (t_opt*))
 			opt->s_option = option[i + 1] == '\0' ? NULL : option + i + 1;
 			return (1);
 		}
-		if (opt->flags & K_OPT && opt->s_option == NULL && has_argument('k', fun))
+		if (opt->flags & K_OPT && opt->k_option == NULL && has_argument('k', fun))
 		{
 			opt->k_option = option[i + 1] == '\0' ? NULL : option + i + 1;
 			return (1);
@@ -196,15 +196,21 @@ static int	do_parsing(char **av, t_opt *opt, int (*fun) (t_opt*))
 			if (!handle_parametrized_opt(av, &i, opt, fun))
 				return (0);
 		}
-		else
+		else if (fun == main_256 || fun == main_md5)
 		{
 			opt->content = av[i];
 			fun(opt);
 			ignore = 1;
 		}
+		else
+		{
+			opt->content = av[i];
+		}
 		i++;
 	}
-	if (opt->content == NULL && !(av[2] && !av[3] && ft_strequ("-p", av[2])))
+	if ((fun == main_256 || fun == main_md5) && opt->content == NULL && !(av[2] && !av[3] && ft_strequ("-p", av[2])))
+		fun(opt);
+	else
 		fun(opt);
 	return (1);
 }
@@ -222,9 +228,9 @@ int			parse_options(int ac, char **av, t_opt *opt)
 		fun = main_256;
 	else if (ft_strequ(av[1], "base64"))
 		fun = main_base64;
-	else if (ft_strequ(av[1], "des") || ft_strequ(av[1], "des-ecb"))
+	else if (ft_strequ(av[1], "des-ecb"))
 		fun = main_des_ecb;
-	else if (ft_strequ(av[1], "des-cbc"))
+	else if (ft_strequ(av[1], "des") || ft_strequ(av[1], "des-cbc"))
 		fun = main_des_cbc;
 	else if (ft_strequ(av[1], "sha1"))
 		fun = main_sha1;

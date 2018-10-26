@@ -1,7 +1,7 @@
 ./ft_ssl print error message
-./ft_ssl des -k"133457799BBCDFF1" -e <(echo -n "\x01\x23\x45\x67\x89\xab\xcd\xef")
-
+- unit testing for parsing
 - Gerer les fichiers avec password (ecrire le salt ou le lire)
 - handle output file
 - Faire une interface en ligne de commande pour pbkdf2_hmac_sha1 (Bonus)
 
+- change input from conent to in parameter (don't ignore -i)

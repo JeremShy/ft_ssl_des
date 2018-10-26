@@ -28,7 +28,7 @@ int	bytes_to_key_md5(t_btk_md5_params *params)
 		salt_len = 8;
 	i = 0;
 	offset = 0;
-	while (i < required_rounds) 
+	while (i < required_rounds)
 	{
 		if (i != 0)
 		{

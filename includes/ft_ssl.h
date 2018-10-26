@@ -194,14 +194,12 @@ int				main_sha1(t_opt *opt);
 typedef struct	s_des
 {
 	unsigned char	key[8];
-
 	uint8_t				ived;
 	unsigned char	iv[8];
-
 	uint8_t				salted;
 	unsigned char	salt[8];
-
 	uint8_t				encode;
+	int					out_fd;
 }							t_des;
 
 typedef enum e_mode
@@ -259,7 +257,7 @@ typedef struct	s_btk_md5_params {
 	size_t				data_len;
 	unsigned char		*key;
 	size_t				key_len;
-	unsigned char	*iv;
+	unsigned char		*iv;
 	size_t				iv_len;
 }				t_btk_md5_params;
 
