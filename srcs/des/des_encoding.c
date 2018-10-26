@@ -148,16 +148,23 @@ uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mod
 	n = 0;
 	while (n < datalen / 8)
 	{
-		if (mode == cbc)
+		if (mode == cbc && des->encode == 1)
 			in[n] ^= last_block;
 		ret[n] = encode_block(des, in[n], ks);
-		if (mode == cbc)
+		if (mode == cbc && des->encode == 1)
 			last_block = ret[n];
+		else if (mode == cbc && des->encode == 0)
+		{
+			if (n == 0)
+				ret[n] ^= last_block;
+			else
+				ret[n] ^= in[n - 1];
+		}
 		n++;
 	}
 	if (des->encode == 0)
 		remove_padding((void*)ret, &datalen, (uint8_t*)ret);
-	if (des->salted)
+	if (des->salted && des->encode == 1)
 	{
 		write(des->out_fd, "Salted__", 8);
 		write(des->out_fd, des->salt, 8);

@@ -113,6 +113,11 @@ static int	get_option(char *option, t_opt *opt, int (*fun) (t_opt*))
 			opt->k_option = option[i + 1] == '\0' ? NULL : option + i + 1;
 			return (1);
 		}
+		if (opt->flags & V_OPT && opt->v_option == NULL && has_argument('v', fun))
+		{
+			opt->v_option = option[i + 1] == '\0' ? NULL : option + i + 1;
+			return (1);
+		}
 		i++;
 	}
 	return (1);
@@ -163,6 +168,13 @@ static int		handle_parametrized_opt(char **av, int *i, t_opt *opt, int (*fun)(t_
 		if (!str)
 			return (0);
 		opt->k_option = str;
+		(*i)++;
+	}
+	else if ((opt->flags & V_OPT) && opt->v_option == NULL)
+	{
+		if (!str)
+			return (0);
+		opt->v_option = str;
 		(*i)++;
 	}
 	else if ((opt->flags & S_OPT))
