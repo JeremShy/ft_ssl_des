@@ -88,7 +88,6 @@ static int	compute_des(t_des *des, t_opt *opt, int *in_fd)
 		if (!hex_string_to_bytes(opt->k_option, des->key, 8))
 		{
 			ft_putendl_fd("Error : Problem while parsing the key", 2);
-			printf("key : %s\n", opt->k_option);
 			return (0);
 		}
 	}

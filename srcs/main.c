@@ -54,5 +54,5 @@ int		main(int argc, char **argv)
 	}
 	if (!parse_options(argc, argv, &opt))
 		return (2);
-	return (88);
+	return (3);
 }

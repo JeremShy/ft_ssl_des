@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 import subprocess
 import sys
+import tempfile
+import shutil
+import os
 
 from termcolor import colored
-PROGRAM_NAME = "./ft_ssl"
+PROGRAM_NAME = os.getcwd() + "/ft_ssl"
 
 current_nfalse = 0
 current_test_nbr = 0
@@ -52,6 +55,25 @@ def check_des_ecb(key, data, expected_output, decrypt, mine = True):
 	current_nfalse += 1
 	return (False)
 
+def	check_parse_error(command, expected_output, error_on_empty_stdout=True):
+	global current_nfalse
+	global current_test_nbr
+
+	current_test_nbr += 1
+
+	command = [PROGRAM_NAME] + command
+
+	result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	if (error_on_empty_stdout and result.stdout != b''):
+		print (colored("Error", 'red'), " : Stdout not empty (", result.stdout, ") [", current_test_nbr, "]")
+	elif (result.stderr != expected_output):
+		print (colored("Error", 'red'), " : [", expected_output, "] != [", result.stderr, "] [", current_test_nbr, "]")
+	else:
+		print (colored("OK", 'green'), "[", current_test_nbr, "]")
+		return (True)
+	current_nfalse += 1
+	return (False)
+
 def check_des_cbc(key, iv, data, expected_output, decrypt, mine = True, against_real_one=False):
 	global current_nfalse
 	global current_test_nbr
@@ -65,11 +87,11 @@ def check_des_cbc(key, iv, data, expected_output, decrypt, mine = True, against_
 
 	if (against_real_one == False):
 		if (mine == True):
-			result = subprocess.run([PROGRAM_NAME, "des-cbc", mode, b"-k" + key, "-i", iv], stdout=subprocess.PIPE, stderr=subprocess.PIPE, input=data)
+			result = subprocess.run([PROGRAM_NAME, "des-cbc", mode, b"-k" + key, "-v", iv], stdout=subprocess.PIPE, stderr=subprocess.PIPE, input=data)
 		else:
 			result = subprocess.run(["openssl", "des-cbc", mode, b"-K", key, "-iv", iv], stdout=subprocess.PIPE, stderr=subprocess.PIPE, input=data)
 	else:
-		result = subprocess.run([PROGRAM_NAME, "des-cbc", mode, b"-k" + key, "-i", iv], stdout=subprocess.PIPE, stderr=subprocess.PIPE, input=data)
+		result = subprocess.run([PROGRAM_NAME, "des-cbc", mode, b"-k" + key, "-v", iv], stdout=subprocess.PIPE, stderr=subprocess.PIPE, input=data)
 		other = subprocess.run(["openssl", "des-cbc", mode, b"-K", key, "-iv", iv], stdout=subprocess.PIPE, stderr=subprocess.PIPE, input=data)
 		expected_output = other.stdout
 
@@ -82,7 +104,6 @@ def check_des_cbc(key, iv, data, expected_output, decrypt, mine = True, against_
 		return (True)
 	current_nfalse += 1
 	return (False)
-
 
 def RUN_HMAC_SHA1_TESTS():
 	global current_nfalse
@@ -130,9 +151,33 @@ def RUN_DES_CBC_TESTS():
 	check_des_cbc(b"133457799BBCDFF1", b"0000000000000000", b"jcamhi\n", b"\xf2\x9e\xc5\x74\xd3\xbe\x8e\xb6", False, mine=False)
 	check_des_cbc(b"133457799BBCDFF1", b"12345689AB000000", b"jcamhi\n", b"\x3c\x13\x1c\x13\xd7\x25\xe7\x42", False)
 	check_des_cbc(b"133457799BBCDFF1", b"12345689AB000000", b"jcamhi\n", b"\x3c\x13\x1c\x13\xd7\x25\xe7\x42", False, mine=False)
-	check_des_cbc(b"133457799BBCDFF1", b"12345689AB000000", b"Test Using Larger Than One Block-Size Data", b"", False, against_real_one=True, )
+	check_des_cbc(b"133457799BBCDFF1", b"12345689AB000000", b"Test Using Larger Than One Block-Size Data", b"", False, against_real_one=True,)
 	print("Number of false : ( {} / {} )".format(colored(current_nfalse, "red"), colored(current_test_nbr, "green")))
 
+
+def RUN_PARSING_TESTS():
+	global current_nfalse
+	global current_test_nbr
+	print ("PARSING : ")
+	current_nfalse = 0
+	current_test_nbr = 0
+
+	temp_dir = tempfile.mkdtemp(prefix="testing_", dir=".");
+	os.chdir(temp_dir)
+
+	check_parse_error([b'des'], b"Error : You must specify one of -e or -d\n")
+	check_parse_error([b'dex'], b'Unknown algorithm: dex\n\nStandard commands\n\nMessage Digest commands\nmd5\tsha1\tsha256\tsha512\n\nCipher commands\nbase64\tdes\tdes-cbc\tdes-ecb\n\n')
+	check_parse_error([b'des', b'-e', b'-ix'], b'Error while trying to open file for reading.\n')
+	
+	check_parse_error([b'des', b'-e', b'-i.', '-pa'], b'Error while trying to open file for reading.\n') # Todo : check if trying to read file
+
+	check_parse_error([b'des', b'-d', b'-i', b'../Makefile', '-kz'], b'Error : Problem while parsing the key\n')
+	check_parse_error([b'des', b'-d', b'-i', b'../Makefile', '-vaz'], b'Error : Problem while parsing the iv\n')
+	check_parse_error([b'des', b'-d', b'-i', b'../Makefile', '-va', '-kz'], b'Error : Problem while parsing the key\n')
+	check_parse_error([b'des', b'-i', b'../Makefile', '-va'], b'Error : You must specify one of -e or -d\n')
+
+	os.chdir("..")
+	shutil.rmtree(temp_dir)
 
 def main():
 	global current_nfalse
@@ -141,6 +186,9 @@ def main():
 	total_nfalse = 0
 	total_test_nbr = 0
 
+	RUN_PARSING_TESTS()
+	total_nfalse += current_nfalse
+	total_test_nbr += current_test_nbr
 	RUN_HMAC_SHA1_TESTS()
 	total_nfalse += current_nfalse
 	total_test_nbr += current_test_nbr
