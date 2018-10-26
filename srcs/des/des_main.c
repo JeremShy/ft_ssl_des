@@ -31,19 +31,33 @@ static void print_opt(t_opt *opt)
 	printf("content : %s\n", opt->content);
 }
 
-static int	compute_des(t_des *des, t_opt *opt)
+static int	compute_des(t_des *des, t_opt *opt, int *in_fd)
 {
 	t_btk_md5_params	params;
 
 	ft_bzero(des, sizeof(t_des));
-	if (opt->flags & I_OPT)
+	if (opt->flags & V_OPT)
 	{
-		if (!hex_string_to_bytes(opt->i_option, des->iv, 8))
+		if (!hex_string_to_bytes(opt->v_option, des->iv, 8))
 		{
 			ft_putendl_fd("Error : Problem while parsing the iv", 2);
 			return (0);
 		}
 		des->ived = 1;
+	}
+	if (opt->flags & E_OPT && opt->flags & S_OPT)
+	{
+		ft_putendl_fd("Error : You must only specify one of -e or -d", 2);
+		return (0);
+	}
+	if (opt->flags & E_OPT)
+		des->encode = 1;
+	else if (opt->flags & D_OPT)
+		des->encode = 0;
+	else
+	{
+		ft_putendl_fd("Error : You must specify one of -e or -d", 2);
+		return (0);
 	}
 	if (opt->flags & K_OPT && opt->k_option)
 	{
@@ -54,8 +68,13 @@ static int	compute_des(t_des *des, t_opt *opt)
 			return (0);
 		}
 	}
-	else if (opt->flags & P_OPT && opt->p_option)
+	else
 	{
+		if (!(opt->flags & P_OPT) || !opt->p_option)
+		{
+			opt->flags &= P_OPT;
+			opt->p_option = ft_strdup(getpass("Please enter a password :"));
+		}
 		if (getentropy(des->salt, 8) == -1)
 		{
 			ft_putendl_fd("Error while trying to generate a random salt.", 2);
@@ -78,25 +97,6 @@ static int	compute_des(t_des *des, t_opt *opt)
 		des->salted = 1;
 		des->ived = 1;
 	}
-	else
-	{
-		ft_putendl_fd("Error : You must specify at least a password or a key.", 2);
-		return (0);
-	}
-	if (opt->flags & E_OPT && opt->flags & S_OPT)
-	{
-		ft_putendl_fd("Error : You must only specify one of -e or -d", 2);
-		return (0);
-	}
-	if (opt->flags & E_OPT)
-		des->encode = 1;
-	else if (opt->flags & D_OPT)
-		des->encode = 0;
-	else
-	{
-		ft_putendl_fd("Error : You must specify one of -e or -d", 2);
-		return (0);
-	}
 	if (opt->flags & O_OPT)
 	{
 		if (!opt->o_option)
@@ -112,6 +112,23 @@ static int	compute_des(t_des *des, t_opt *opt)
 	}
 	else
 		des->out_fd = 1;
+	if (opt->flags & I_OPT)
+	{
+		if (!opt->i_option)
+		{
+			close(des->out_fd);
+			ft_putendl_fd("Error !\n", 2);
+			return (0);
+		}
+		if ((*in_fd = open(opt->i_option, O_RDONLY)) == -1)
+		{
+			ft_putendl_fd("Error while trying to open file for reading.", 2);
+			close(des->out_fd);
+			return (0);
+		}
+	}
+	else
+		*in_fd = 0;
 
 	return (1);
 }
@@ -123,15 +140,8 @@ int	main_des_ecb(t_opt *opt)
 	int		datalen;
 	int		fd;
 
-	if (!(compute_des(&des, opt)))
+	if (!(compute_des(&des, opt, &fd)))
 		return (0);
-	if (!opt->content)
-		fd = 0;
-	else if ((fd = open(opt->content, O_RDONLY)) == -1)
-	{
-		ft_putendl_fd("Error : Could not open the input file for reading", 2);
-		return (0);
-	}
 	data = get_file(fd, &datalen);
 	if (data == NULL)
 	{
@@ -151,18 +161,11 @@ int	main_des_cbc(t_opt *opt)
 	int		fd;
 	int		out_fd;
 
-	if (!(compute_des(&des, opt)))
+	if (!(compute_des(&des, opt, &fd)))
 		return (0);
 	if (!des.ived)
 	{
 		ft_putendl_fd("Error : An IV must be specified for the cbc mode to work.", 2);
-		return (0);
-	}
-	if (!opt->content)
-		fd = 0;
-	else if ((fd = open(opt->content, O_RDONLY)) == -1)
-	{
-		ft_putendl_fd("Error : Could not open the input file for reading", 2);
 		return (0);
 	}
 	data = get_file(fd, &datalen);
