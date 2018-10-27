@@ -1,4 +1,5 @@
 #include <ft_ssl.h>
+#include <sys/stat.h>
 
 
 static void print_opt(t_opt *opt)
@@ -35,6 +36,7 @@ static int	compute_des(t_des *des, t_opt *opt, int *in_fd)
 {
 	t_btk_md5_params	params;
 	char	buf[8];
+	struct stat	s_buf;
 
 	ft_bzero(des, sizeof(t_des));
 	if (opt->flags & V_OPT)
@@ -77,6 +79,13 @@ static int	compute_des(t_des *des, t_opt *opt, int *in_fd)
 			if (des->out_fd != 1)
 				close(des->out_fd);
 			ft_putendl_fd("Error while trying to open file for reading.", 2);
+			return (0);
+		}
+		if (fstat(*in_fd, &s_buf) == -1 || !(S_ISREG(s_buf.st_mode)))
+		{
+			if (des->out_fd != 1)
+				close(des->out_fd);
+			ft_putendl_fd("Can't stat input file, or the input file is a folder.", 2);
 			return (0);
 		}
 	}
