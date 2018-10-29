@@ -1,7 +1,7 @@
 #include <ft_ssl.h>
 #define BUFF_SIZE_BASE64 48
 
-static void init_decode_params(t_params_base64 *params)
+void			init_decode_params(t_params_base64 *params)
 {
 	int	i;
 
@@ -32,7 +32,6 @@ void			decode_four_chars(char buff[4], t_params_base64 *params, int output_fd)
 {
 	char	decoded[3];
 
-	// printf("Decoding : %.4s\n", buff);
 	if (buff[2] == '=')
 	{
 		buff[0] = params->alphabet[(int)buff[0]];
@@ -75,25 +74,22 @@ void			decode_four_chars(char buff[4], t_params_base64 *params, int output_fd)
 
 void			fill_trad_buff(char buffer[BUFF_SIZE_BASE64], char trad_buff[4], int *i, int r)
 {
-	int	size_buf;
-	char tmp;
+	int				size_buf;
+	char			tmp;
 	t_params_base64	params;
 
 	init_decode_params(&params);
-	// printf("Calling fill trad buff with i = %d and r = %d\n", *i, r);
 	if (trad_buff[3] != '\0')
 	{
 		ft_bzero(trad_buff, 4);
 		(*i)++;
 	}
 	size_buf = ft_strlen(trad_buff);
-	// printf("size_buf : %d\n", size_buf);
 	while (*i < r && size_buf < 4)
 	{
 		tmp = params.alphabet[(int)buffer[*i]];
 		if (tmp != -1 || buffer[*i] == '=')
 		{
-			// printf("Adding : buffer[%d] = %c in trad_buff[%d]\n", *i, buffer[*i], size_buf);
 			trad_buff[size_buf] = buffer[*i];
 			size_buf++;
 		}

@@ -31,7 +31,7 @@ static void print_opt(t_opt *opt)
 	printf("content : %s\n", opt->content);
 }
 
-static int	compute_des(t_des *des, t_opt *opt, int *in_fd)
+static int	compute_des_struct(t_des *des, t_opt *opt, int *in_fd)
 {
 	ft_bzero(des, sizeof(t_des));
 	if (!handle_v_e_d_opt(des, opt))
@@ -40,22 +40,8 @@ static int	compute_des(t_des *des, t_opt *opt, int *in_fd)
 		return (0);
 	if (!handle_k_opt(des, opt, *in_fd))
 		return (0);
-	if (opt->flags & O_OPT)
-	{
-		if (!opt->o_option)
-		{
-			ft_putendl_fd("Error : Syntax error on -o option", 2);
-			return (0);
-		}
-		if ((des->out_fd = open(opt->o_option, O_WRONLY | O_CREAT | O_TRUNC, 0644)) == -1)
-		{
-			ft_putendl_fd("Error : Could not open output file for writing\n", 2);
-			return (0);
-		}
-	}
-	else
-		des->out_fd = 1;
-
+	if (!handle_o_opt(des, opt))
+		return (0);
 	return (1);
 }
 
@@ -66,14 +52,8 @@ int	main_des_ecb(t_opt *opt)
 	int		datalen;
 	int		fd;
 
-	if (!(compute_des(&des, opt, &fd)))
+	if (!(compute_des_struct(&des, opt, &fd)))
 		return (0);
-	data = get_file(fd, &datalen);
-	if (data == NULL)
-	{
-		ft_putendl_fd("Error: Read error.", 2);
-		return (0);
-	}
 	des_encode(&des, (const uint8_t *)data, datalen, ecb);
 	free(data);
 	return (1);
@@ -86,20 +66,13 @@ int	main_des_cbc(t_opt *opt)
 	char	*data;
 	int		datalen;
 	int		fd;
-	int		out_fd;
 
 	// print_opt(opt);
-	if (!(compute_des(&des, opt, &fd)))
+	if (!(compute_des_struct(&des, opt, &fd)))
 		return (0);
 	if (!des.ived)
 	{
 		ft_putendl_fd("Error : An IV must be specified for the cbc mode to work.", 2);
-		return (0);
-	}
-	data = get_file(fd, &datalen);
-	if (data == NULL)
-	{
-		ft_putendl_fd("Error: Read error.", 2);
 		return (0);
 	}
 	des_encode(&des, (const uint8_t *)data, datalen, cbc);

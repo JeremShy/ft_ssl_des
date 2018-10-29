@@ -26,6 +26,7 @@ SRC_NAME = \
 		base64/base64_main.c \
 		base64/base64_encode.c \
 		base64/base64_decode.c \
+		base64/base64_decode_2.c \
 \
 		des/des_main.c \
 		des/des_init.c \

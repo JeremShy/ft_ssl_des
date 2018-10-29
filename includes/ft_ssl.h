@@ -21,6 +21,7 @@
 # include <stdint.h>
 # include <sys/mman.h>
 # include <sys/random.h>
+# include <sys/stat.h>
 
 # define P_OPT	(1 << 0)
 # define Q_OPT	(1 << 1)
@@ -178,8 +179,12 @@ typedef struct	s_params_base64 {
 
 int				main_base64(t_opt *opt);
 void			base64_encode_from_fd(t_opt *opt, int fd, int output_fd);
+
+void			init_decode_params(t_params_base64 *params);
+void			fill_trad_buff(char *buffer, char trad_buff[4], int *i, int r);
 void			base64_decode_from_fd(t_opt *opt, int fd, int output_fd);
 
+uint8_t			*base64_dec_to_buff_from_fd(int fd, uint8_t *buf, size_t *buf_size);
 /*
 ** sha1
 */
@@ -200,6 +205,15 @@ typedef struct	s_des
 	unsigned char	salt[8];
 	uint8_t				encode;
 	int					out_fd;
+
+	int8_t	*input_data; // raw file input, must be freed.
+	int	input_data_size;
+
+	int8_t	*decoded_input_data; // Decoded data, must be freed if not null, in case of base64.
+	size_t	decoded_input_data_size;
+
+	int8_t	*offset_input_data; // data after offset, for example in case of "Salted__..." message. must not be freed.
+	int	offset_input_data_size;
 }							t_des;
 
 typedef enum e_mode
@@ -231,11 +245,11 @@ extern const int	g_des_rotl_2[];
 int	handle_v_e_d_opt(t_des *des, t_opt *opt);
 int	handle_i_opt(t_des *des, t_opt *opt, int *in_fd);
 int	handle_k_opt(t_des *des, t_opt *opt, int in_fd);
+int	handle_o_opt(t_des *des, t_opt *opt);
 
 int	main_des_ecb(t_opt *opt);
 int	main_des_cbc(t_opt *opt);
 void	print_block_as_char(uint64_t in);
-// void	print_binary(uint8_t in);
 void	print_binary(uint8_t *in, size_t size, size_t blocks);
 
 void	compute_key_schedule(t_uint48 out[16], uint64_t key);

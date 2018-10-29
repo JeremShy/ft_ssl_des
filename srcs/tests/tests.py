@@ -200,6 +200,7 @@ def RUN_PARSING_TESTS():
 
 	os.chdir("..")
 	shutil.rmtree(temp_dir)
+	print("Number of false : ( {} / {} )".format(colored(current_nfalse, "red"), colored(current_test_nbr, "green")))
 
 def main():
 	global current_nfalse
