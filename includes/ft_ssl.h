@@ -206,13 +206,13 @@ typedef struct	s_des
 	uint8_t				encode;
 	int					out_fd;
 
-	int8_t	*input_data; // raw file input, must be freed.
+	uint8_t	*input_data; // raw file input, must be freed.
 	int	input_data_size;
 
-	int8_t	*decoded_input_data; // Decoded data, must be freed if not null, in case of base64.
+	uint8_t	*decoded_input_data; // Decoded data, must be freed if not null, in case of base64.
 	size_t	decoded_input_data_size;
 
-	int8_t	*offset_input_data; // data after offset, for example in case of "Salted__..." message. must not be freed.
+	uint8_t	*offset_input_data; // data after offset, for example in case of "Salted__..." message. must not be freed.
 	int	offset_input_data_size;
 }							t_des;
 
@@ -244,7 +244,7 @@ extern const int	g_des_rotl_2[];
 
 int	handle_v_e_d_opt(t_des *des, t_opt *opt);
 int	handle_i_opt(t_des *des, t_opt *opt, int *in_fd);
-int	handle_k_opt(t_des *des, t_opt *opt, int in_fd);
+int	handle_k_opt(t_des *des, t_opt *opt);
 int	handle_o_opt(t_des *des, t_opt *opt);
 
 int	main_des_ecb(t_opt *opt);

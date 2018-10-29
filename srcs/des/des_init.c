@@ -1,7 +1,7 @@
 #include <ft_ssl.h>
 #include <sys/stat.h>
 
-int	handle_k_opt(t_des *des, t_opt *opt, int in_fd)
+int	handle_k_opt(t_des *des, t_opt *opt)
 {
 	t_btk_md5_params	params;
 
@@ -12,6 +12,8 @@ int	handle_k_opt(t_des *des, t_opt *opt, int in_fd)
 			ft_putendl_fd("Error : Problem while parsing the key", 2);
 			return (0);
 		}
+			des->offset_input_data = des->decoded_input_data;
+			des->offset_input_data_size = des->decoded_input_data_size;
 	}
 	else
 	{

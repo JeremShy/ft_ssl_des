@@ -38,7 +38,7 @@ static int	compute_des_struct(t_des *des, t_opt *opt, int *in_fd)
 		return (0);
 	if (!handle_i_opt(des, opt, in_fd))
 		return (0);
-	if (!handle_k_opt(des, opt, *in_fd))
+	if (!handle_k_opt(des, opt))
 		return (0);
 	if (!handle_o_opt(des, opt))
 		return (0);
@@ -54,7 +54,7 @@ int	main_des_ecb(t_opt *opt)
 
 	if (!(compute_des_struct(&des, opt, &fd)))
 		return (0);
-	des_encode(&des, (const uint8_t *)data, datalen, ecb);
+	des_encode(&des, des.offset_input_data, des.offset_input_data_size, ecb);
 	free(data);
 	return (1);
 }
@@ -63,8 +63,6 @@ int	main_des_ecb(t_opt *opt)
 int	main_des_cbc(t_opt *opt)
 {
 	t_des	des;
-	char	*data;
-	int		datalen;
 	int		fd;
 
 	// print_opt(opt);
@@ -75,9 +73,9 @@ int	main_des_cbc(t_opt *opt)
 		ft_putendl_fd("Error : An IV must be specified for the cbc mode to work.", 2);
 		return (0);
 	}
-	des_encode(&des, (const uint8_t *)data, datalen, cbc);
+	des_encode(&des, des.offset_input_data, des.offset_input_data_size, cbc);
 	if (des.out_fd != 0)
 		close(des.out_fd);
-	free(data);
+	// free(data);
 	return (1);
 }
