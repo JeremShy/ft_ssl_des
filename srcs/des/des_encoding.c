@@ -124,14 +124,6 @@ uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mod
 	uint64_t	last_block;
 	t_uint48	ks[16];
 
-	// printf("key : ");
-	// print_memory(des->key, 8);
-	// if (mode == cbc)
-	// {
-	// 	printf("iv : ");
-	// 	print_memory(des->iv, 8);
-	// }
-
 	if (mode == cbc)
 		last_block = *(uint64_t*)des->iv;
 	if (des->encode)

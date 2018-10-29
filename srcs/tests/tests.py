@@ -105,6 +105,24 @@ def check_des_cbc(key, iv, data, expected_output, decrypt, mine = True, against_
 	current_nfalse += 1
 	return (False)
 
+def check_des_cbc_against_real(data, password):
+	global current_nfalse
+	global current_test_nbr
+
+	current_test_nbr += 1
+	encrypted_res = subprocess.run([PROGRAM_NAME, "des-cbc", "-e", "-p", password], stdout=subprocess.PIPE, stderr=subprocess.PIPE, input=data)
+	if (encrypted_res.stderr != b''):
+		print (colored("Error", 'red'), " : Stderr not empty (", encrypted_res.stderr, ") [", current_test_nbr, "]")
+
+	decrypted_res = subprocess.run(["openssl", "des-cbc", "-d", "-pass", b"pass:" + password], stdout=subprocess.PIPE, stderr=subprocess.PIPE, input=encrypted_res.stdout)
+	if (decrypted_res.stdout != data):
+		print (colored("Error", 'red'), " : [", data, "] != [", decrypted_res.stdout, "] [", current_test_nbr, "]")
+	else:
+		print (colored("OK", 'green'), "[", current_test_nbr, "]")
+		return (True)
+	current_nfalse += 1
+	return (False)
+
 def RUN_HMAC_SHA1_TESTS():
 	global current_nfalse
 	global current_test_nbr
@@ -134,7 +152,6 @@ def RUN_DES_ECB_TESTS():
 	check_des_ecb(b"133457799BBCDFF1", b"jcamhi\n", b"\xf2\x9e\xc5\x74\xd3\xbe\x8e\xb6", False)
 	check_des_ecb(b"133457799BBCDFF1", b"jcamhi\n", b"\xf2\x9e\xc5\x74\xd3\xbe\x8e\xb6", False, mine=False)
 	check_des_ecb(b"133457799BBCDFF1", b"\xf2\x9e\xc5\x74\xd3\xbe\x8e\xb6",  b"jcamhi\n", True, mine=False)
-
 	check_des_ecb(b"133457799BBCDFF1", b"salutcavajesuisbeauetforthahahahahaha", b"\x4d\x7f\x30\x1a\xfe\x18\x94\xe9\x61\xe2\x8d\xc3\xb0\x17\xd2\xe5\x9e\xb8\x8b\x77\xfe\x70\x3f\x58\x36\x9d\x49\x7c\xdb\xb0\x85\x0b\xf9\xc7\x64\x43\x3a\xfe\x0d\xc0", False)
 	check_des_ecb(b"133457799BBCDFF1", b"\x4d\x7f\x30\x1a\xfe\x18\x94\xe9\x61\xe2\x8d\xc3\xb0\x17\xd2\xe5\x9e\xb8\x8b\x77\xfe\x70\x3f\x58\x36\x9d\x49\x7c\xdb\xb0\x85\x0b\xf9\xc7\x64\x43\x3a\xfe\x0d\xc0", b"salutcavajesuisbeauetforthahahahahaha", True)
 
@@ -151,7 +168,12 @@ def RUN_DES_CBC_TESTS():
 	check_des_cbc(b"133457799BBCDFF1", b"0000000000000000", b"jcamhi\n", b"\xf2\x9e\xc5\x74\xd3\xbe\x8e\xb6", False, mine=False)
 	check_des_cbc(b"133457799BBCDFF1", b"12345689AB000000", b"jcamhi\n", b"\x3c\x13\x1c\x13\xd7\x25\xe7\x42", False)
 	check_des_cbc(b"133457799BBCDFF1", b"12345689AB000000", b"jcamhi\n", b"\x3c\x13\x1c\x13\xd7\x25\xe7\x42", False, mine=False)
-	check_des_cbc(b"133457799BBCDFF1", b"12345689AB000000", b"Test Using Larger Than One Block-Size Data", b"", False, against_real_one=True,)
+	check_des_cbc(b"133457799BBCDFF1", b"12345689AB000000", b"Test Using Larger Than One Block-Size Data", b"", False, against_real_one=True)
+
+	check_des_cbc_against_real(b"jcamhi", b"a")
+	check_des_cbc_against_real(b"fwubefoboewbfeowbiofewfioewbfoeiwboefwbifewoifewiobfewoibfewoibefwbfeiw", b"afewihfiewofhewoifheoiw")
+	check_des_cbc_against_real(b"\x01\x02\x01\x02\x01\x02\x01\x02\x01\x02\x01\x02\x01\x02\x03\x04\x03\x04\x03\x04\x00\x01", b"afewihfiewofhewoifheoiw")
+
 	print("Number of false : ( {} / {} )".format(colored(current_nfalse, "red"), colored(current_test_nbr, "green")))
 
 
@@ -205,4 +227,3 @@ def main():
 
 if __name__ == '__main__':
 	sys.exit(main())
-
