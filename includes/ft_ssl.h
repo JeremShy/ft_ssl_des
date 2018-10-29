@@ -239,7 +239,7 @@ extern const int	g_des_pc_one_right[];
 extern const int	g_des_pc_two[];
 extern const int	g_des_p[];
 extern const int	g_des_lshift[];
-extern const int	g_des_rotl_1[];
+extern const int	g_des_rotl_1[];de
 extern const int	g_des_rotl_2[];
 
 int	handle_v_e_d_opt(t_des *des, t_opt *opt);

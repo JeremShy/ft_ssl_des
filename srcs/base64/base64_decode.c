@@ -84,7 +84,7 @@ void			fill_trad_buff(char buffer[BUFF_SIZE_BASE64], char trad_buff[4], int *i, 
 		ft_bzero(trad_buff, 4);
 		(*i)++;
 	}
-	size_buf = ft_strlen(trad_buff);
+		size_buf = ft_strlen(trad_buff);
 	while (*i < r && size_buf < 4)
 	{
 		tmp = params.alphabet[(int)buffer[*i]];
