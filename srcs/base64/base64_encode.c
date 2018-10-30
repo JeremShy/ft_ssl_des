@@ -112,6 +112,29 @@ static void	print_four_chars(t_params_base64 *params, char buffer[BUFF_SIZE_BASE
 	}
 }
 
+void			base64_enc_from_buf_to_fd(uint8_t *buffer, int buf_size, int output_fd)
+{
+	t_params_base64	params;
+	char	trad_buff[4];
+	int		i;
+
+	init_params(&params);
+	ft_bzero(trad_buff, 4);
+	i = 0;
+	while (i < buf_size)
+	{
+		if (buf_size * 8 - i * 6 < 24)
+			break ;
+		else
+			print_four_chars(&params, (char*)buffer, &i, output_fd);
+	}
+	if (buf_size * 8 - i * 6 < 24 && buf_size * 8 - i * 6 != 0)
+		print_last_bits(&params, (char*)buffer, i, buf_size, output_fd);
+	ft_putchar_fd('\n', output_fd);
+}
+
+
+
 void	base64_encode_from_fd(t_opt *opt, int fd, int output_fd)
 {
 	t_params_base64	params;

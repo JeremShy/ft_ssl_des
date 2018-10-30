@@ -185,6 +185,7 @@ void			fill_trad_buff(char *buffer, char trad_buff[4], int *i, int r);
 void			base64_decode_from_fd(t_opt *opt, int fd, int output_fd);
 
 uint8_t			*base64_dec_to_buff_from_fd(int fd, uint8_t *buf, size_t *buf_size);
+void			base64_enc_from_buf_to_fd(uint8_t *buffer, int buf_size, int output_fd);
 /*
 ** sha1
 */
@@ -239,7 +240,7 @@ extern const int	g_des_pc_one_right[];
 extern const int	g_des_pc_two[];
 extern const int	g_des_p[];
 extern const int	g_des_lshift[];
-extern const int	g_des_rotl_1[];de
+extern const int	g_des_rotl_1[];
 extern const int	g_des_rotl_2[];
 
 int	handle_v_e_d_opt(t_des *des, t_opt *opt);
