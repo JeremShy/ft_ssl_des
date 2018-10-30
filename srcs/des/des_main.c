@@ -34,6 +34,10 @@ static void print_opt(t_opt *opt)
 static int	compute_des_struct(t_des *des, t_opt *opt, int *in_fd)
 {
 	ft_bzero(des, sizeof(t_des));
+	if (opt->flags & A_OPT)
+		des->to_base64 = 1;
+	else
+		des->to_base64 = 0;
 	if (!handle_v_e_d_opt(des, opt))
 		return (0);
 	if (!handle_i_opt(des, opt, in_fd))
@@ -48,14 +52,11 @@ static int	compute_des_struct(t_des *des, t_opt *opt, int *in_fd)
 int	main_des_ecb(t_opt *opt)
 {
 	t_des	des;
-	char	*data;
-	int		datalen;
 	int		fd;
 
 	if (!(compute_des_struct(&des, opt, &fd)))
 		return (0);
 	des_encode(&des, des.offset_input_data, des.offset_input_data_size, ecb);
-	free(data);
 	return (1);
 }
 
@@ -65,7 +66,6 @@ int	main_des_cbc(t_opt *opt)
 	t_des	des;
 	int		fd;
 
-	// print_opt(opt);
 	if (!(compute_des_struct(&des, opt, &fd)))
 		return (0);
 	if (!des.ived)
@@ -76,6 +76,5 @@ int	main_des_cbc(t_opt *opt)
 	des_encode(&des, des.offset_input_data, des.offset_input_data_size, cbc);
 	if (des.out_fd != 0)
 		close(des.out_fd);
-	// free(data);
 	return (1);
 }

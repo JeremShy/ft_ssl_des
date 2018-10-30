@@ -164,12 +164,43 @@ uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mod
 	}
 	if (des->encode == 0)
 		remove_padding((void*)ret, &datalen, (uint8_t*)ret);
-	if (des->salted && des->encode == 1)
+	if (des->to_base64)
 	{
-		write(des->out_fd, "Salted__", 8);
-		write(des->out_fd, des->salt, 8);
+		uint8_t	*temp;
+		size_t	size;
+
+		size = 0;
+		if (des->salted && des->encode == 1)
+			size = 16 + datalen;
+		else
+			size = datalen;
+
+
+		if (!(temp = malloc(size)))
+		{
+			ft_putendl_fd("Error : Memory error.", 2);
+			return (NULL);
+		}
+		if (size != datalen)
+		{
+			ft_memcpy(temp, "Salted__", 8);
+			ft_memcpy(temp + 8, des->salt, 8);
+			ft_memcpy(temp + 16, ret, datalen);
+		}
+		else
+			ft_memcpy(temp, ret, datalen);
+		base64_enc_from_buf_to_fd(temp, size, des->out_fd);
+		free(temp);
 	}
-	write(des->out_fd, ret, datalen);
+	else
+	{
+		if (des->salted && des->encode == 1)
+		{
+			write(des->out_fd, "Salted__", 8);
+			write(des->out_fd, des->salt, 8);
+		}
+		write(des->out_fd, ret, datalen);
+	}
 	return (NULL);
 }
 

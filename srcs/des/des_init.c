@@ -126,7 +126,7 @@ int	handle_i_opt(t_des *des, t_opt *opt, int *in_fd)
 		ft_putendl_fd("Error : Memory error.", 2);
 		return (0);
 	}
-	if (opt->flags & A_OPT)
+	if (opt->flags & A_OPT && !des->encode)
 	{
 		lseek(*in_fd, 0, SEEK_SET);
 		des->decoded_input_data = (void*)base64_dec_to_buff_from_fd(*in_fd, NULL, &(des->decoded_input_data_size));

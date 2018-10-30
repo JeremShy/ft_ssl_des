@@ -23,8 +23,6 @@ void	print_binary(uint8_t *in, size_t size, size_t blocks)
 
 void print_half_key(uint64_t key)
 {
-	int	i;
-
 	// print_block_as_hex(key);
 	print_binary((void*)&key, 28, 7);
 	printf("\n");
@@ -48,7 +46,6 @@ t_uint48	calculate_key(uint64_t c, uint64_t d)
 	t_uint48	ret;
 	uint64_t	pair;
 	uint64_t	reti;
-	int	i = 0;
 
 	pair = c | end_conv_64(end_conv_64(d) >> 28);
 	permutate((void*)&pair, (void*)&reti, g_des_pc_two, 48);

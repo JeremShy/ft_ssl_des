@@ -186,6 +186,7 @@ void			base64_decode_from_fd(t_opt *opt, int fd, int output_fd);
 
 uint8_t			*base64_dec_to_buff_from_fd(int fd, uint8_t *buf, size_t *buf_size);
 void			base64_enc_from_buf_to_fd(uint8_t *buffer, int buf_size, int output_fd);
+
 /*
 ** sha1
 */
@@ -215,6 +216,8 @@ typedef struct	s_des
 
 	uint8_t	*offset_input_data; // data after offset, for example in case of "Salted__..." message. must not be freed.
 	int	offset_input_data_size;
+
+	uint8_t	to_base64;
 }							t_des;
 
 typedef enum e_mode
