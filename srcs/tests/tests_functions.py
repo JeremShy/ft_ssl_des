@@ -130,3 +130,29 @@ def check_des_cbc_against_real(data, password, encrypt_with_mine=True):
 		return (True)
 	current_nfalse += 1
 	return (False)
+
+def check_base64_against_real(data, encrypt_with_mine=True):
+	global current_nfalse
+	global current_test_nbr
+
+	current_test_nbr += 1
+	if (encrypt_with_mine == True):
+		encrypted_res = subprocess.run([PROGRAM_NAME, "base64", "-e"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, input=data)
+	else:
+		encrypted_res = subprocess.run(["openssl", "base64", "-e"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, input=data)
+	if (encrypted_res.stderr != b''):
+			print (colored("Error", 'red'), " : Encrypted stderr not empty (", encrypted_res.stderr, ") [", current_test_nbr, "]")
+	else:
+		if (encrypt_with_mine == True):
+			decrypted_res = subprocess.run(["openssl", "base64", "-d"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, input=encrypted_res.stdout)
+		else:
+			decrypted_res = subprocess.run([PROGRAM_NAME, "base64", "-d"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, input=encrypted_res.stdout)
+		if (decrypted_res.stderr != b''):
+			print (colored("Error", 'red'), " : Decrypted stderr not empty (", encrypted_res.stderr, ") [", current_test_nbr, "]")
+		elif (decrypted_res.stdout != data):
+			print (colored("Error", 'red'), " : [", data, "] != [", decrypted_res.stdout, "] [", current_test_nbr, "]")
+		else:
+			print (colored("OK", 'green'), "[", current_test_nbr, "]")
+			return (True)
+	current_nfalse += 1
+	return (False)

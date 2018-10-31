@@ -1,5 +1,5 @@
 #include <ft_ssl.h>
-#define BUFF_SIZE_BASE64 1
+#define BUFF_SIZE_BASE64 48
 /*
 	** Returns the content of the file opened on fd decoded as base64, placed in buf.
 	** If buf is NULL, This function uses malloc to allocate one, and return its size.
@@ -31,7 +31,7 @@ void			decode_n_store_four_chars(char enc_buff[4], t_params_base64 *params, uint
 		buf[*j] = (enc_buff[0] << 2) | ((enc_buff[1] & 48) >> 4);
 		(*j)++;
 	}
-	else if (enc_buff[3] == '=')
+else if (enc_buff[3] == '=')
 	{
 		enc_buff[0] = params->alphabet[(int)enc_buff[0]];
 		enc_buff[1] = params->alphabet[(int)enc_buff[1]];
@@ -68,6 +68,7 @@ uint8_t			*base64_dec_to_buff_from_fd(int fd, uint8_t *buf, size_t *buf_size)
 		return (NULL);
 	init_decode_params(&params);
 	ft_bzero(trad_buff, 4);
+	(*buf_size) = 0;
 	j = 0;
 	while ((r = read(fd, buffer, BUFF_SIZE_BASE64)) > 0)
 	{
@@ -76,12 +77,10 @@ uint8_t			*base64_dec_to_buff_from_fd(int fd, uint8_t *buf, size_t *buf_size)
 		{
 			fill_trad_buff(buffer, trad_buff, &i, r);
 			if (trad_buff[3] != '\0')
-			{
 				decode_n_store_four_chars(trad_buff, &params, buf, &j);
-				(*buf_size) += 3;
-			}
 		}
 	}
+	*buf_size = j;
 	return (buf);
 }
 

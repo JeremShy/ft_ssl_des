@@ -178,7 +178,7 @@ typedef struct	s_params_base64 {
 }								t_params_base64;
 
 int				main_base64(t_opt *opt);
-void			base64_encode_from_fd(t_opt *opt, int fd, int output_fd);
+void			base64_encode_from_fd(int fd, int output_fd);
 
 void			init_decode_params(t_params_base64 *params);
 void			fill_trad_buff(char *buffer, char trad_buff[4], int *i, int r);

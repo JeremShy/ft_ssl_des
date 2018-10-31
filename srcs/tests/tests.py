@@ -6,8 +6,24 @@ import shutil
 import os
 from termcolor import colored
 
-from tests_functions import check_hmac_sha1, check_des_ecb, check_parse_error, check_des_cbc, check_des_cbc_against_real
+from tests_functions import check_hmac_sha1, check_des_ecb, check_parse_error, check_des_cbc, check_des_cbc_against_real, check_base64_against_real
 import tests_functions
+
+def RUN_BASE64_TESTS():
+	print ("BASE64")
+	tests_functions.current_nfalse = 0;
+	tests_functions.current_test_nbr = 0
+
+	check_base64_against_real(b"pouet")
+	check_base64_against_real(b"pouet", encrypt_with_mine=False)
+
+	check_base64_against_real(b"")
+	check_base64_against_real(b"", encrypt_with_mine=False)
+
+	check_base64_against_real(b"oiweoifewhoifewhofeiohfweweoifhweoifhweoifhewoifhweoiieowfhweiofhioewoiefwfewhooiweoifewhoifewhofewhewfoifwhoiwehfoewihfewofhewofhewfhoewifhewoifhweoifioewhfoiewhfoowihfewoiohfweweoifhweoifhweoifhewoifhweoiieowfhweiofhioewoiefwfewho")
+	check_base64_against_real(b"oiweoifewhoifewhofewhewfoifwhoiwehfoewihfewofhewofhewfhoewifhewoifhweoifioewhfoiewhfoiewhfoiewhfoiewhfiowehfoiewhfioewhfioewhfowehifewofhweoifhewoifhewoifhewiofhewifhewoifhweoiieowfhweiofhioewoiefwfewho", encrypt_with_mine=False)
+
+	print("Number of false : ( {} / {} )".format(colored(tests_functions.current_nfalse, "red"), colored(tests_functions.current_test_nbr, "green")))
 
 def RUN_HMAC_SHA1_TESTS():
 	print ("HMAC_SHA1 : ")
@@ -98,6 +114,9 @@ def main():
 	total_nfalse += tests_functions.current_nfalse
 	total_test_nbr += tests_functions.current_test_nbr
 	RUN_DES_CBC_TESTS()
+	total_nfalse += tests_functions.current_nfalse
+	total_test_nbr += tests_functions.current_test_nbr
+	RUN_BASE64_TESTS()
 	total_nfalse += tests_functions.current_nfalse
 	total_test_nbr += tests_functions.current_test_nbr
 

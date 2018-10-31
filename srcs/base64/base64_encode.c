@@ -93,7 +93,7 @@ void	print_last_bits(t_params_base64 *params, char buffer[BUFF_SIZE_BASE64], int
 	}
 	else
 	{
-		printf("ERROR\n");
+		printf("ERROR - %d\n", r * 8 - i * 6);
 	}
 }
 
@@ -121,7 +121,7 @@ void			base64_enc_from_buf_to_fd(uint8_t *buffer, int buf_size, int output_fd)
 	init_params(&params);
 	ft_bzero(trad_buff, 4);
 	i = 0;
-	while (i < buf_size)
+	while (1)
 	{
 		if (buf_size * 8 - i * 6 < 24)
 			break ;
@@ -135,32 +135,16 @@ void			base64_enc_from_buf_to_fd(uint8_t *buffer, int buf_size, int output_fd)
 
 
 
-void	base64_encode_from_fd(t_opt *opt, int fd, int output_fd)
+void	base64_encode_from_fd(int fd, int output_fd)
 {
-	t_params_base64	params;
-	char	buffer[BUFF_SIZE_BASE64];
-	int		r;
-	int		i;
+	char	*buf;
+	int	size;
 
-	(void)opt;
-	init_params(&params);
-	while ((r = read(fd, buffer, BUFF_SIZE_BASE64)) > 0)
+	if (!(buf = get_file(fd, &size)))
 	{
-		i = 0;
-		while (1)
-		{
-			if (r * 8 - i * 6 < 24)
-				break;
-			else
-				print_four_chars(&params, buffer, &i, output_fd);
-		}
-		if (r < BUFF_SIZE_BASE64)
-			break;
-		ft_putchar_fd('\n', output_fd);
+		ft_putendl_fd("Error - Memory error", 2);
+		return ;
 	}
-	if (r < 0)
-		ft_putstr_fd("Error while reading the input.\n", 2);
-	if (r * 8 - i * 6 < 24 && r * 8 - i * 6 != 0)
-		print_last_bits(&params, buffer, i, r, output_fd);
-	ft_putchar_fd('\n', output_fd);
+	base64_enc_from_buf_to_fd((void*)buf, size, output_fd);
+	free(buf);
 }

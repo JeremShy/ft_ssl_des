@@ -124,6 +124,7 @@ uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mod
 	uint64_t	last_block;
 	t_uint48	ks[16];
 
+		// print_memory(data, datalen);
 	if (mode == cbc)
 		last_block = *(uint64_t*)des->iv;
 	if (des->encode)
@@ -164,7 +165,7 @@ uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mod
 	}
 	if (des->encode == 0)
 		remove_padding((void*)ret, &datalen, (uint8_t*)ret);
-	if (des->to_base64)
+	if (des->to_base64 && des->encode == 1)
 	{
 		uint8_t	*temp;
 		size_t	size;
@@ -178,7 +179,7 @@ uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mod
 
 		if (!(temp = malloc(size)))
 		{
-			ft_putendl_fd("Error : Memory error.", 2);
+			ft_putendl_fd("Error : Memory error (181).", 2);
 			return (NULL);
 		}
 		if (size != datalen)
@@ -189,6 +190,7 @@ uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mod
 		}
 		else
 			ft_memcpy(temp, ret, datalen);
+		// write(des->out_fd, temp, size);
 		base64_enc_from_buf_to_fd(temp, size, des->out_fd);
 		free(temp);
 	}

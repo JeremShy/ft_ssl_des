@@ -4,11 +4,13 @@ int	main_base64(t_opt *opt)
 {
 	int	in_fd;
 	int	out_fd;
-	if ((opt->flags & D_OPT && opt->flags & E_OPT) || (!(opt->flags & D_OPT) && !(opt->flags & E_OPT)))
+	if (opt->flags & D_OPT && opt->flags & E_OPT)
 	{
 		ft_putstr_fd("Error : You must specify one of -d (decode) and -e (encode).\n", 2);
 		return (0);
 	}
+	if (!(opt->flags & D_OPT) && !(opt->flags & E_OPT))
+		opt->flags |= E_OPT;
 	in_fd = 0;
 	out_fd = 1;
 	if (opt->flags & I_OPT)
@@ -32,7 +34,7 @@ int	main_base64(t_opt *opt)
 		}
 	}
 	if (opt->flags & E_OPT)
-		base64_encode_from_fd(opt, in_fd, out_fd);
+		base64_encode_from_fd(in_fd, out_fd);
 	else if (opt->flags & D_OPT)
 		base64_decode_from_fd(opt, in_fd, out_fd);
 	return (1);
