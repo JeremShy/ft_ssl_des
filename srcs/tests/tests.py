@@ -84,7 +84,6 @@ def RUN_PARSING_TESTS():
 	temp_dir = tempfile.mkdtemp(prefix="testing_", dir=".");
 	os.chdir(temp_dir)
 
-	check_parse_error([b'des'], b"Error : You must specify one of -e or -d\n")
 	check_parse_error([b'dex'], b'Unknown algorithm: dex\n\nStandard commands\n\nMessage Digest commands\nmd5\tsha1\tsha256\tsha512\n\nCipher commands\nbase64\tdes\tdes-cbc\tdes-ecb\n\n')
 	check_parse_error([b'des', b'-e', b'-ix'], b'Error while trying to open file for reading.\n')
 	
@@ -93,7 +92,6 @@ def RUN_PARSING_TESTS():
 	check_parse_error([b'des', b'-d', b'-i', b'../Makefile', '-kz'], b'Error : Problem while parsing the key\n')
 	check_parse_error([b'des', b'-d', b'-i', b'../Makefile', '-vaz'], b'Error : Problem while parsing the iv\n')
 	check_parse_error([b'des', b'-d', b'-i', b'../Makefile', '-va', '-kz'], b'Error : Problem while parsing the key\n')
-	check_parse_error([b'des', b'-i', b'../Makefile', '-va'], b'Error : You must specify one of -e or -d\n')
 
 	os.chdir("..")
 	shutil.rmtree(temp_dir)

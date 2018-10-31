@@ -78,15 +78,12 @@ int	handle_v_e_d_opt(t_des *des, t_opt *opt)
 		ft_putendl_fd("Error : You must only specify one of -e or -d", 2);
 		return (0);
 	}
+	if (!(opt->flags & E_OPT) && !(opt->flags & D_OPT))
+		opt->flags |= E_OPT;
 	if (opt->flags & E_OPT)
 		des->encode = 1;
 	else if (opt->flags & D_OPT)
 		des->encode = 0;
-	else
-	{
-		ft_putendl_fd("Error : You must specify one of -e or -d", 2);
-		return (0);
-	}
 	return (1);
 }
 

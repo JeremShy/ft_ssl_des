@@ -3,5 +3,3 @@
 - Faire une interface en ligne de commande pour pbkdf2_hmac_sha1 (Bonus)
 - check leaks in opt struct at end
 - ./ft_ssl md5 -sa
-- echo "one deep secret" | ./ft_ssl des-cbc -a -e -k 6162636461626364 -v 0011223344556677
-- Default for ft_ssl has to be encode.
