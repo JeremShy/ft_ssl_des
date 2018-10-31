@@ -12,8 +12,8 @@ int	handle_k_opt(t_des *des, t_opt *opt)
 			ft_putendl_fd("Error : Problem while parsing the key", 2);
 			return (0);
 		}
-			des->offset_input_data = des->decoded_input_data;
-			des->offset_input_data_size = des->decoded_input_data_size;
+		des->offset_input_data = des->decoded_input_data;
+		des->offset_input_data_size = des->decoded_input_data_size;
 	}
 	else
 	{
