@@ -24,10 +24,21 @@ int	handle_k_opt(t_des *des, t_opt *opt)
 		}
 		if (des->encode == 1)
 		{
-			if (getentropy(des->salt, 8) == -1)
+			if (opt->flags & S_OPT && opt->s_option)
 			{
-				ft_putendl_fd("Error while trying to generate a random salt.", 2);
-				return (0);
+				if (!hex_string_to_bytes(opt->s_option, des->salt, 8))
+				{
+					ft_putendl_fd("Error : Problem while parsing the salt.", 2);
+					return (0);
+				}
+			}
+			else
+			{
+				if (getentropy(des->salt, 8) == -1)
+				{
+					ft_putendl_fd("Error while trying to generate a random salt.", 2);
+					return (0);
+				}
 			}
 			des->offset_input_data = des->decoded_input_data;
 			des->offset_input_data_size = des->decoded_input_data_size;
