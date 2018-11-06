@@ -40,7 +40,7 @@ static int	compute_des_struct(t_des *des, t_opt *opt, int *in_fd)
 		des->to_base64 = 0;
 	if (!handle_v_e_d_opt(des, opt))
 		return (0);
-	if (!handle_i_opt(des, opt, in_fd))
+	if (!handle_i_a_opt(des, opt, in_fd))
 		return (0);
 	if (!handle_k_opt(des, opt))
 		return (0);

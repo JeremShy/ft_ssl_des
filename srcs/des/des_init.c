@@ -1,5 +1,4 @@
 #include <ft_ssl.h>
-#include <sys/stat.h>
 
 int	handle_v_e_d_opt(t_des *des, t_opt *opt)
 {
@@ -23,60 +22,6 @@ int	handle_v_e_d_opt(t_des *des, t_opt *opt)
 		des->encode = 1;
 	else if (opt->flags & D_OPT)
 		des->encode = 0;
-	return (1);
-}
-
-int	handle_i_opt(t_des *des, t_opt *opt, int *in_fd)
-{
-	struct stat	s_buf;
-
-	if (opt->flags & I_OPT)
-	{
-		if (!opt->i_option)
-		{
-			if (des->out_fd != 1)
-				close(des->out_fd);
-			ft_putendl_fd("Error !\n", 2);
-			return (0);
-		}
-		if ((*in_fd = open(opt->i_option, O_RDONLY)) == -1)
-		{
-			if (des->out_fd != 1)
-				close(des->out_fd);
-			ft_putendl_fd("Error while trying to open file for reading.", 2);
-			return (0);
-		}
-		if (fstat(*in_fd, &s_buf) == -1 || (S_ISDIR(s_buf.st_mode)))
-		{
-			if (des->out_fd != 1)
-				close(des->out_fd);
-			ft_putendl_fd("Can't stat input file, or the input file is a folder.", 2);
-			return (0);
-		}
-	}
-	else
-		*in_fd = 0;
-	des->input_data = (void*)get_file(*in_fd, &(des->input_data_size));
-	if (!des->input_data)
-	{
-		ft_putendl_fd("Error : Memory error.", 2);
-		return (0);
-	}
-	if (opt->flags & A_OPT && !des->encode)
-	{
-		lseek(*in_fd, 0, SEEK_SET);
-		des->decoded_input_data = (void*)base64_dec_to_buff_from_fd(*in_fd, NULL, &(des->decoded_input_data_size));
-		if (!des->decoded_input_data)
-		{
-			free(des->input_data);
-			return (0);
-		}
-	}
-	else
-	{
-		des->decoded_input_data = des->input_data;
-		des->decoded_input_data_size = des->input_data_size;
-	}
 	return (1);
 }
 
