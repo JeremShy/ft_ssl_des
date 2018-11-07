@@ -1,11 +1,31 @@
 #include <ft_ssl.h>
 
-char	*get_file(int fd, int *in_size)
+static int	in_else(char *ret, int *in_size, int r, char *buffer)
+{
+	char	*tmp;
+
+	tmp = ret;
+	if (!(ret = malloc(*in_size + r)))
+		return (0);
+	ft_memcpy(ret, tmp, *in_size);
+	ft_memcpy(ret + *in_size, buffer, r);
+	free(tmp);
+	return (1);
+}
+
+static void	end_of_func(int r, char **ret)
+{
+	if (r < 0)
+		*ret = NULL;
+	if (!*ret)
+		*ret = ft_strdup("");
+}
+
+char		*get_file(int fd, int *in_size)
 {
 	char	buffer[4096];
 	int		r;
 	char	*ret;
-	char	*tmp;
 
 	*in_size = 0;
 	ret = NULL;
@@ -14,22 +34,17 @@ char	*get_file(int fd, int *in_size)
 		buffer[r] = '\0';
 		if (!ret)
 		{
-			ret = malloc(r);
+			if (!(ret = malloc(r)))
+				return (NULL);
 			ft_memcpy(ret, buffer, r);
 		}
 		else
 		{
-			tmp = ret;
-			ret = malloc(*in_size + r);
-			ft_memcpy(ret, tmp, *in_size);
-			ft_memcpy(ret + *in_size, buffer, r);
-			free(tmp);
+			if (!in_else(ret, in_size, r, buffer))
+				return (NULL);
 		}
 		*in_size += r;
 	}
-	if (r < 0)
-		ret = NULL;
-	if (!ret)
-		ret = ft_strdup("");
+	end_of_func(r, &ret);
 	return (ret);
 }

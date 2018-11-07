@@ -68,10 +68,6 @@ int	pbkdf2_hmac_sha1(t_pbkdf2_params *params)
 	char	*out;
 	unsigned char	*tmp;
 
-	printf("salt : \n");
-	print_memory(params->salt, params->salt_len);
-	printf("pass : \n");
-	print_memory(params->password, params->pass_len);
 	out = malloc(sizeof(char) * params->dklen + 1);
 	l = (int)ceil(params->dklen / (double)HLEN);
 	printf("l : %d\n", l);
