@@ -39,7 +39,7 @@ int8_t	permutate(const int8_t *in, int8_t *out, const int *permutation,
 		i++;
 	}
 	ft_memcpy(out, buffer, (size + 7) / 8);
-	if (size > 64)
+	if (size > 64 / 8)
 		free(buffer);
 	return (1);
 }

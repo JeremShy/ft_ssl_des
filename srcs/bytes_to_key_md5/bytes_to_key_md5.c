@@ -55,5 +55,6 @@ int	bytes_to_key_md5(t_btk_md5_params *params)
 	ft_memcpy(params->key, rez, params->key_len);
 	ft_memcpy((void*)params->iv, rez + params->key_len, params->iv_len);
 	free(rez);
+	free(buffer);
 	return (1);
 }

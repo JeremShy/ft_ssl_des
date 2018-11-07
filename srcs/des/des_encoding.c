@@ -128,7 +128,9 @@ uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mod
 	if (mode == cbc)
 		last_block = *(uint64_t*)des->iv;
 	if (des->encode)
+	{
 		data = pkcs5_padding(data, &datalen, 8);
+	}
 	else if ((datalen / 8) * 8 != datalen)
 	{
 		ft_putendl_fd("Error : The size of the data to decrypt isn't a multiple 64 bit.", 2);
@@ -175,8 +177,6 @@ uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mod
 			size = 16 + datalen;
 		else
 			size = datalen;
-
-
 		if (!(temp = malloc(size)))
 		{
 			ft_putendl_fd("Error : Memory error (181).", 2);
@@ -190,7 +190,6 @@ uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mod
 		}
 		else
 			ft_memcpy(temp, ret, datalen);
-		// write(des->out_fd, temp, size);
 		base64_enc_from_buf_to_fd(temp, size, des->out_fd);
 		free(temp);
 	}
@@ -203,6 +202,9 @@ uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mod
 		}
 		write(des->out_fd, ret, datalen);
 	}
+	free(ret);
+	if (des->encode)
+		free((void*)data);
 	return (NULL);
 }
 

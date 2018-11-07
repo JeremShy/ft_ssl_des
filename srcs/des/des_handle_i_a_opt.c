@@ -60,7 +60,7 @@ int	handle_i_a_opt(t_des *des, t_opt *opt, int *in_fd)
 		return (handle_a_opt(des, in_fd));
 	else
 	{
-		des->decoded_input_data = des->input_data;
+		des->decoded_input_data = des->input_data; 
 		des->decoded_input_data_size = des->input_data_size;
 		return (1);
 	}

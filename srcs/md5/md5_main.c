@@ -36,5 +36,6 @@ int	ft_md5(uint8_t *in, size_t in_len, uint8_t *out)
 	end_len = padd_buffer(0, in_len, buffer);
 	hash_buffer_md5(end_len, &p, buffer);
 	ft_memcpy(out, p.buffer, 16);
+	free(buffer);
 	return (1);
 }
