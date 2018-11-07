@@ -1,20 +1,10 @@
 #include <ft_ssl.h>
 
 /*
-	* Datalen is in bytes size. 
+	* Datalen is in bytes size.
 */
 
-void	print_block_as_char(uint64_t in)
-{
-	printf("block : %c%c%c%c%c%c%c%c\n", (char)in, *(((char*)&in) + 1), *(((char*)&in) + 2), *(((char*)&in) + 3), *(((char*)&in) + 4), *(((char*)&in) + 5), *(((char*)&in) + 6), *(((char*)&in) + 7));
-}
-
-void	print_half_block_as_char(uint32_t in)
-{
-	printf("half_block : %c%c%c%c\n", (char)in, *(((char*)&in) + 1), *(((char*)&in) + 2), *(((char*)&in) + 3));
-}
-
-void	divide_block(uint8_t *out, t_uint48 in)
+void		divide_block(uint8_t *out, t_uint48 in)
 {
 	uint64_t	in_x;
 	uint64_t	mask;
@@ -33,22 +23,13 @@ void	divide_block(uint8_t *out, t_uint48 in)
 	out[7] = (in_x & (mask << 0)) >> 0;
 }
 
-void	do_iteration(t_uint48 ks[16], uint32_t *l, uint32_t *r, size_t i)
+uint32_t	calculate_s_box_r(uint8_t blocks[8])
 {
-	uint32_t	lp;
-	uint32_t	rp;
-	t_uint48	eed;
-	t_uint48	xored;
-	uint8_t		blocks[8];
-	uint32_t	p;
+	uint32_t	s_box_r;
+	int			z;
 
-	lp = *r;
-
-	permutate((void*)r, (void*)&eed, g_des_e, 48);
-	xored.x = eed.x ^ ks[i].x;
-	divide_block(blocks, xored);
-	int	z = 0;
-	uint32_t	s_box_r = 0;
+	s_box_r = 0;
+	z = 0;
 	while (z < 8)
 	{
 		s_box_r <<= 4;
@@ -56,24 +37,39 @@ void	do_iteration(t_uint48 ks[16], uint32_t *l, uint32_t *r, size_t i)
 		z++;
 	}
 	s_box_r = end_conv_32(s_box_r);
-	permutate((void*)&s_box_r, (void*)&p, g_des_p, 32);
-	rp = p ^ *l;
-	*l = lp;
-	*r = rp;
+	return (s_box_r);
 }
 
-uint64_t	encode_block(t_des *des, const uint64_t in, t_uint48 ks[16])
+void		do_iteration(t_uint48 ks[16], uint32_t *l, uint32_t *r, size_t i)
+{
+	uint32_t	lp_rp_p[3];
+	uint32_t	s_box_r;
+	t_uint48	eed;
+	t_uint48	xored;
+	uint8_t		blocks[8];
+
+	lp_rp_p[0] = *r;
+	permutate((void*)r, (void*)&eed, g_des_e, 48);
+	xored.x = eed.x ^ ks[i].x;
+	divide_block(blocks, xored);
+	s_box_r = calculate_s_box_r(blocks);
+	permutate((void*)&s_box_r, (void*)&lp_rp_p[2], g_des_p, 32);
+	lp_rp_p[1] = lp_rp_p[2] ^ *l;
+	*l = lp_rp_p[0];
+	*r = lp_rp_p[1];
+}
+
+uint64_t	encode_block(const uint64_t in, t_uint48 ks[16])
 {
 	uint64_t	out;
 	uint32_t	l;
 	uint32_t	r;
+	int			i;
 
-	(void)des;
 	permutate((const void*)&in, (void *)&out, g_des_ip, 64);
-
 	l = *(uint32_t*)&out;
 	r = *(((uint32_t*)&out) + 1);
-	int	i = 0;
+	i = 0;
 	while (i < 16)
 	{
 		do_iteration(ks, &l, &r, i);
@@ -85,131 +81,32 @@ uint64_t	encode_block(t_des *des, const uint64_t in, t_uint48 ks[16])
 	return (out);
 }
 
-void	swap_ks(t_uint48 ks[16])
+uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen,
+	t_mode mode)
 {
-	t_uint48	cpy[16];
-
-	ft_memcpy(cpy, ks, 16 * sizeof(t_uint48));
-	ks[0] = cpy[15];
-	ks[1] = cpy[14];
-	ks[2] = cpy[13];
-	ks[3] = cpy[12];
-	ks[4] = cpy[11];
-	ks[5] = cpy[10];
-	ks[6] = cpy[9];
-	ks[7] = cpy[8];
-	ks[8] = cpy[7];
-	ks[9] = cpy[6];
-	ks[10] = cpy[5];
-	ks[11] = cpy[4];
-	ks[12] = cpy[3];
-	ks[13] = cpy[2];
-	ks[14] = cpy[1];
-	ks[15] = cpy[0];
-}
-
-void	remove_padding(const uint8_t *data, size_t *datalen, uint8_t *ret)
-{
-	int	padd_size = data[*datalen - 1];
-
-	ret[*datalen - padd_size] = '\0';
-	*datalen = *datalen - padd_size;
-}
-
-uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mode)
-{
-	size_t				n;
-	uint64_t		*ret;
+	size_t		n;
+	uint64_t	*ret;
 	uint64_t	*in;
 	uint64_t	last_block;
 	t_uint48	ks[16];
 
-		// print_memory(data, datalen);
 	if (mode == cbc)
 		last_block = *(uint64_t*)des->iv;
-	if (des->encode)
-	{
-		data = pkcs5_padding(data, &datalen, 8);
-	}
-	else if ((datalen / 8) * 8 != datalen)
-	{
-		ft_putendl_fd("Error : The size of the data to decrypt isn't a multiple 64 bit.", 2);
+	if (!(data = prepare_data(des, data, &datalen)) ||
+		!(ret = prepare_ks_and_ret(des, ks, datalen)))
 		return (NULL);
-	}
-
-	compute_key_schedule(ks, *(uint64_t*)des->key);
-	if (des->encode == 0)
-	{
-		swap_ks(ks);
-	}
-	if (!(ret = malloc(datalen * sizeof(char))))
-	{
-		ft_putendl_fd("Error : Could not allocate enough space.", 2);
-		return (NULL);
-	}
 	in = (void*)data;
 	n = 0;
 	while (n < datalen / 8)
 	{
 		if (mode == cbc && des->encode == 1)
 			in[n] ^= last_block;
-		ret[n] = encode_block(des, in[n], ks);
+		ret[n] = encode_block(in[n], ks);
 		if (mode == cbc && des->encode == 1)
 			last_block = ret[n];
 		else if (mode == cbc && des->encode == 0)
-		{
-			if (n == 0)
-				ret[n] ^= last_block;
-			else
-				ret[n] ^= in[n - 1];
-		}
+			do_xor(ret, last_block, in, n);
 		n++;
 	}
-	if (des->encode == 0)
-		remove_padding((void*)ret, &datalen, (uint8_t*)ret);
-	if (des->to_base64 && des->encode == 1)
-	{
-		uint8_t	*temp;
-		size_t	size;
-
-		size = 0;
-		if (des->salted && des->encode == 1)
-			size = 16 + datalen;
-		else
-			size = datalen;
-		if (!(temp = malloc(size)))
-		{
-			ft_putendl_fd("Error : Memory error (181).", 2);
-			return (NULL);
-		}
-		if (size != datalen)
-		{
-			ft_memcpy(temp, "Salted__", 8);
-			ft_memcpy(temp + 8, des->salt, 8);
-			ft_memcpy(temp + 16, ret, datalen);
-		}
-		else
-			ft_memcpy(temp, ret, datalen);
-		base64_enc_from_buf_to_fd(temp, size, des->out_fd);
-		free(temp);
-	}
-	else
-	{
-		if (des->salted && des->encode == 1)
-		{
-			write(des->out_fd, "Salted__", 8);
-			write(des->out_fd, des->salt, 8);
-		}
-		write(des->out_fd, ret, datalen);
-	}
-	free(ret);
-	if (des->encode)
-		free((void*)data);
-	return (NULL);
+	return (des_end(des, ret, datalen, data));
 }
-
-/*
-	* encode_block encodes a 64bit (8 bytes) long block, into another 64bit
-	*  long block.
-	* There are 8 chars in a block.
-*/

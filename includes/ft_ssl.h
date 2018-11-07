@@ -221,6 +221,7 @@ typedef struct	s_des
 	int	offset_input_data_size;
 
 	uint8_t	to_base64;
+
 }							t_des;
 
 typedef enum e_mode
@@ -249,24 +250,25 @@ extern const int	g_des_lshift[];
 extern const int	g_des_rotl_1[];
 extern const int	g_des_rotl_2[];
 
-int	handle_v_e_d_opt(t_des *des, t_opt *opt);
-int	handle_i_a_opt(t_des *des, t_opt *opt, int *in_fd);
-int	handle_k_opt(t_des *des, t_opt *opt);
-int	handle_o_opt(t_des *des, t_opt *opt);
-
-int	main_des_ecb(t_opt *opt);
-int	main_des_cbc(t_opt *opt);
-void	print_block_as_char(uint64_t in);
-void	print_binary(uint8_t *in, size_t size, size_t blocks);
-
-void	compute_key_schedule(t_uint48 out[16], uint64_t key);
-
-uint8_t	compute_s_box(uint8_t in, size_t i);
-
-uint32_t	*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mode);
-uint32_t rotl_28(uint32_t n, uint32_t x);
-
-
+int				handle_v_e_d_opt(t_des *des, t_opt *opt);
+int				handle_i_a_opt(t_des *des, t_opt *opt, int *in_fd);
+int				handle_k_opt(t_des *des, t_opt *opt);
+int				handle_o_opt(t_des *des, t_opt *opt);
+int				main_des_ecb(t_opt *opt);
+int				main_des_cbc(t_opt *opt);
+void			print_block_as_char(uint64_t in);
+void			print_binary(uint8_t *in, size_t size, size_t blocks);
+void			compute_key_schedule(t_uint48 out[16], uint64_t key);
+uint8_t			compute_s_box(uint8_t in, size_t i);
+uint32_t		*des_encode(t_des *des, const uint8_t *data, size_t datalen, t_mode mode);
+uint32_t		rotl_28(uint32_t n, uint32_t x);
+int				des_print_result_b64(t_des *des, size_t datalen, uint64_t *ret);
+const uint8_t	*prepare_data(t_des *des, const uint8_t *data, size_t *datalen);
+void			swap_ks(t_uint48 ks[16]);
+uint64_t		*prepare_ks_and_ret(t_des *des, t_uint48 ks[16], size_t datalen);
+void			remove_padding(const uint8_t *data, size_t *datalen, uint8_t *ret);
+void			*des_end(t_des *des, uint64_t *ret, size_t datalen, const uint8_t *data);
+void			do_xor(uint64_t *ret, uint64_t last_block, uint64_t *in, size_t n);
 /*
 ** hmac
 */
