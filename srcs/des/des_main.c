@@ -18,7 +18,7 @@ static int	compute_des_struct(t_des *des, t_opt *opt, int *in_fd)
 	return (1);
 }
 
-int	main_des_ecb(t_opt *opt)
+int			main_des_ecb(t_opt *opt)
 {
 	t_des	des;
 	int		fd;
@@ -32,8 +32,7 @@ int	main_des_ecb(t_opt *opt)
 	return (1);
 }
 
-// TODO close out_fd and fd everywhere if needed
-int	main_des_cbc(t_opt *opt)
+int			main_des_cbc(t_opt *opt)
 {
 	t_des	des;
 	int		fd;
@@ -42,7 +41,8 @@ int	main_des_cbc(t_opt *opt)
 		return (0);
 	if (!des.ived)
 	{
-		ft_putendl_fd("Error : An IV must be specified for the cbc mode to work.", 2);
+		ft_putstr_fd("Error : An IV must be specified", 2);
+		ft_putendl_fd(" for the cbc mode to work.", 2);
 		return (0);
 	}
 	des_encode(&des, des.offset_input_data, des.offset_input_data_size, cbc);
