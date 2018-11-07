@@ -222,7 +222,7 @@ static int	do_parsing(char **av, t_opt *opt, int (*fun) (t_opt*))
 	}
 	if ((fun == main_256 || fun == main_md5) && opt->content == NULL && !(av[2] && !av[3] && ft_strequ("-p", av[2])))
 		fun(opt);
-	else
+	else if (fun != main_256 && fun != main_md5)
 		fun(opt);
 	return (1);
 }

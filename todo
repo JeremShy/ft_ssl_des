@@ -2,5 +2,3 @@
 - unit testing for parsing
 - Faire une interface en ligne de commande pour pbkdf2_hmac_sha1 (Bonus)
 - check leaks in opt struct at end
-- ./ft_ssl md5 -sa
-- ./ft_ssl des -i /dev/random
