@@ -1,7 +1,7 @@
 #include <ft_ssl.h>
 #define BUFF_SIZE_BASE64 48
 
-void			init_decode_params(t_params_base64 *params)
+void		init_decode_params(t_params_base64 *params)
 {
 	int	i;
 
@@ -28,7 +28,23 @@ void			init_decode_params(t_params_base64 *params)
 	params->alphabet['/'] = 63;
 }
 
-void			decode_four_chars(char buff[4], t_params_base64 *params, int output_fd)
+static void	decode_four_chars_buff_no_equal(char buff[4],
+	t_params_base64 *params, int output_fd, char decoded[3])
+{
+	buff[0] = params->alphabet[(int)buff[0]];
+	buff[1] = params->alphabet[(int)buff[1]];
+	buff[2] = params->alphabet[(int)buff[2]];
+	buff[3] = params->alphabet[(int)buff[3]];
+	decoded[0] = (buff[0] << 2) | ((buff[1] & 48) >> 4);
+	decoded[1] = ((buff[1] & 15) << 4) | ((buff[2] & 60) >> 2);
+	decoded[2] = ((buff[2] & 3) << 6) | ((buff[3]));
+	ft_putchar_fd(decoded[0], output_fd);
+	ft_putchar_fd(decoded[1], output_fd);
+	ft_putchar_fd(decoded[2], output_fd);
+}
+
+void		decode_four_chars(char buff[4], t_params_base64 *params,
+	int output_fd)
 {
 	char	decoded[3];
 
@@ -41,8 +57,6 @@ void			decode_four_chars(char buff[4], t_params_base64 *params, int output_fd)
 	}
 	else if (buff[3] == '=')
 	{
-		//01234567 01234567 00000000
-		//012345 670123 456700 000000
 		buff[0] = params->alphabet[(int)buff[0]];
 		buff[1] = params->alphabet[(int)buff[1]];
 		buff[2] = params->alphabet[(int)buff[2]];
@@ -52,18 +66,7 @@ void			decode_four_chars(char buff[4], t_params_base64 *params, int output_fd)
 		ft_putchar_fd(decoded[1], output_fd);
 	}
 	else
-	{
-		buff[0] = params->alphabet[(int)buff[0]];
-		buff[1] = params->alphabet[(int)buff[1]];
-		buff[2] = params->alphabet[(int)buff[2]];
-		buff[3] = params->alphabet[(int)buff[3]];
-		decoded[0] = (buff[0] << 2) | ((buff[1] & 48) >> 4);
-		decoded[1] = ((buff[1] & 15) << 4) | ((buff[2] & 60) >> 2);
-		decoded[2] = ((buff[2] & 3) << 6) | ((buff[3]));
-		ft_putchar_fd(decoded[0], output_fd);
-		ft_putchar_fd(decoded[1], output_fd);
-		ft_putchar_fd(decoded[2], output_fd);
-	}
+		decode_four_chars_buff_no_equal(buff, params, output_fd, decoded);
 	ft_bzero(buff, 4);
 }
 
@@ -72,7 +75,8 @@ void			decode_four_chars(char buff[4], t_params_base64 *params, int output_fd)
 	** 01234567 01234567 01234567		(...)
 */
 
-void			fill_trad_buff(char buffer[BUFF_SIZE_BASE64], char trad_buff[4], int *i, int r)
+void		fill_trad_buff(char buffer[BUFF_SIZE_BASE64], char trad_buff[4],
+	int *i, int r)
 {
 	int				size_buf;
 	char			tmp;
@@ -84,7 +88,7 @@ void			fill_trad_buff(char buffer[BUFF_SIZE_BASE64], char trad_buff[4], int *i, 
 		ft_bzero(trad_buff, 4);
 		(*i)++;
 	}
-		size_buf = ft_strlen(trad_buff);
+	size_buf = ft_strlen(trad_buff);
 	while (*i < r && size_buf < 4)
 	{
 		tmp = params.alphabet[(int)buffer[*i]];
@@ -97,15 +101,14 @@ void			fill_trad_buff(char buffer[BUFF_SIZE_BASE64], char trad_buff[4], int *i, 
 	}
 }
 
-void			base64_decode_from_fd(t_opt *opt, int fd, int output_fd)
+void		base64_decode_from_fd(int fd, int output_fd)
 {
 	t_params_base64	params;
-	int	r;
-	char	buffer[BUFF_SIZE_BASE64];
-	char	trad_buff[4];
-	int		i;
+	int				r;
+	char			buffer[BUFF_SIZE_BASE64];
+	char			trad_buff[4];
+	int				i;
 
-	(void)opt;
 	init_decode_params(&params);
 	ft_bzero(trad_buff, 4);
 	while ((r = read(fd, buffer, BUFF_SIZE_BASE64)) > 0)

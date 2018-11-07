@@ -182,7 +182,7 @@ void			base64_encode_from_fd(int fd, int output_fd);
 
 void			init_decode_params(t_params_base64 *params);
 void			fill_trad_buff(char *buffer, char trad_buff[4], int *i, int r);
-void			base64_decode_from_fd(t_opt *opt, int fd, int output_fd);
+void			base64_decode_from_fd(int fd, int output_fd);
 
 uint8_t			*base64_dec_to_buff_from_fd(int fd, uint8_t *buf, size_t *buf_size);
 void			base64_enc_from_buf_to_fd(uint8_t *buffer, int buf_size, int output_fd);

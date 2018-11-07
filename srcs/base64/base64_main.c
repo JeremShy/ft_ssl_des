@@ -36,6 +36,6 @@ int	main_base64(t_opt *opt)
 	if (opt->flags & E_OPT)
 		base64_encode_from_fd(in_fd, out_fd);
 	else if (opt->flags & D_OPT)
-		base64_decode_from_fd(opt, in_fd, out_fd);
+		base64_decode_from_fd(in_fd, out_fd);
 	return (1);
 }
