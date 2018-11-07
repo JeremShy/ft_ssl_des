@@ -118,16 +118,9 @@ void		print_result_64(unsigned char buffer[32], t_opt *opt)
 	write(1, "\n", 1);
 }
 
-
-/*
-	** in_size is in bytes unit.
-	** so multiply it by 2 to have the number of letters needed.
-	** buffer is for the output. it need (in_size * 2) + 1
-*/
-
-char	*bytes_to_char(uint32_t *in, char *out, size_t in_size)
+char		*bytes_to_char(uint32_t *in, char *out, size_t in_size)
 {
-	size_t		i;
+	size_t	i;
 	char	*b_in;
 
 	b_in = (void*)in;
@@ -137,9 +130,10 @@ char	*bytes_to_char(uint32_t *in, char *out, size_t in_size)
 		out[i * 2] = ((b_in[i] & 0xf0) >> 4) + '0';
 		out[i * 2] > '9' ? out[i * 2] = out[i * 2] - '9' - 1 + 'a' : 0;
 		out[i * 2 + 1] = (b_in[i] & 0xf) + '0';
-		out[i * 2 + 1] > '9' ? out[i * 2 + 1] = out[i * 2 + 1] - '9' - 1 + 'a' : 0;
+		out[i * 2 + 1] > '9' ? out[i * 2 + 1] = out[i * 2 + 1] -
+		'9' - 1 + 'a' : 0;
 		i++;
 	}
 	out[2 * i] = '\0';
-	return out;
+	return (out);
 }

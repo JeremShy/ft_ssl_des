@@ -67,7 +67,6 @@ int				parse_options(int ac, char **av, t_opt *opt);
 
 void			print_help(void);
 
-void print_memory(const void *start, size_t size);
 char	*bytes_to_char(uint32_t *in, char *buffer, size_t in_size);
 int	hex_string_to_bytes(const char *str, unsigned char *out, size_t size);
 

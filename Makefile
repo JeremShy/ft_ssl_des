@@ -4,7 +4,6 @@ SRC_NAME = \
 		parsing.c \
 \
 		tools/bitwise_operations.c \
-		tools/debug.c \
 		tools/general_operations.c \
 		tools/hex_string_to_bytes.c \
 		tools/permutate.c \
