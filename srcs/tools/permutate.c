@@ -34,7 +34,8 @@ int8_t	permutate(const int8_t *in, int8_t *out, const int *permutation,
 	i = 0;
 	while (i < size)
 	{
-		if ((in[(permutation[i] - 1) / 8] >> (7 - ((permutation[i] - 1) % 8))) & 1)
+		if ((in[(permutation[i] - 1) / 8] >> (7 - ((permutation[i] - 1)
+			% 8))) & 1)
 			buffer[i / 8] |= (1 << (7 - (i % 8)));
 		i++;
 	}
