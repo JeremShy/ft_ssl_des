@@ -7,7 +7,8 @@
 	* The new size will be stored in size.
 */
 
-uint8_t	*pkcs5_padding(const uint8_t *original_data, size_t *size, size_t padd_multiple)
+uint8_t	*pkcs5_padding(const uint8_t *original_data,
+	size_t *size, size_t padd_multiple)
 {
 	size_t	new_size;
 	uint8_t	*ret;
