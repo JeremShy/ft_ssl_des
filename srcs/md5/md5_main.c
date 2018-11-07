@@ -21,7 +21,6 @@ int	main_md5(t_opt *opt)
 	return (1);
 }
 
-// out must be able to countains 16 bytes.
 int	ft_md5(uint8_t *in, size_t in_len, uint8_t *out)
 {
 	t_params_md5	p;
