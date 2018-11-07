@@ -43,6 +43,7 @@ SRC_NAME = \
 		des/des_s_boxes.c \
 \
 		sha1/sha1_enc.c \
+		sha1/sha1_compute_round.c \
 		sha1/sha1_main.c \
 \
 		bytes_to_key_md5/bytes_to_key_md5.c \

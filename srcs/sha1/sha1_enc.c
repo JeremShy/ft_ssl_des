@@ -1,23 +1,6 @@
 #include <ft_ssl.h>
 
-# define MASK 0x0000000F
-
-static uint32_t	f(uint32_t t, uint32_t b, uint32_t c, uint32_t d)
-{
-	if (t < 20)
-		return ((b & c) | ((~b) & d));
-	else if (t < 40)
-		return (b ^ c ^ d);
-	else if (t < 60)
-		return ((b & c) | (b & d) | (c & d));
-	else if (t < 80)
-		return (b ^ c ^ d);
-	else
-	{
-		ft_putstr_fd("ERROR 15\n", 2);
-		return (-1);
-	}
-}
+#define MASK 0x0000000F
 
 static void	init_constants(uint32_t k[80], uint32_t h[5])
 {
@@ -43,7 +26,7 @@ static void	init_constants(uint32_t k[80], uint32_t h[5])
 	h[4] = 0xC3D2E1F0;
 }
 
-static	char *sha_padding(const void *in, size_t original_len, size_t *size)
+static char	*sha_padding(const void *in, size_t original_len, size_t *size)
 {
 	char		*ret;
 
@@ -59,51 +42,7 @@ static	char *sha_padding(const void *in, size_t original_len, size_t *size)
 	return (ret);
 }
 
-static void	compute_round(uint32_t h[5], const uint32_t k[80], const void *m)
-{
-	uint32_t	w[80];
-	uint32_t	t;
-	uint32_t	temp;
-	uint32_t	abcde[5];
-
-	t = 0;
-	while (t < 16)
-	{
-		w[t] = end_conv_32(((uint32_t*)m)[t]);
-		t++;
-	}
-
-	t = 16;
-	while (t < 80)
-	{
-		w[t] = rotl(1, w[t - 3] ^ w[t - 8] ^ w[t - 14] ^ w[t - 16]);
-		t++;
-	}
-
-	abcde[0] = h[0];
-	abcde[1] = h[1];
-	abcde[2] = h[2];
-	abcde[3] = h[3];
-	abcde[4] = h[4];
-	t = 0;
-	while (t < 80)
-	{
-		temp = rotl(5, abcde[0]) + f(t, abcde[1], abcde[2], abcde[3]) + abcde[4] + w[t] + k[t];
-		abcde[4] = abcde[3];
-		abcde[3] = abcde[2];
-		abcde[2] = rotl(30, abcde[1]);
-		abcde[1] = abcde[0];
-		abcde[0] = temp;
-		t++;
-	}
-	h[0] = h[0] + abcde[0];
-	h[1] = h[1] + abcde[1];
-	h[2] = h[2] + abcde[2];
-	h[3] = h[3] + abcde[3];
-	h[4] = h[4] + abcde[4];
-}
-
-void	fill_out(char out[41], uint32_t h[5])
+void		fill_out(char out[41], uint32_t h[5])
 {
 	int	i;
 
@@ -125,7 +64,7 @@ void	fill_out(char out[41], uint32_t h[5])
 	out[40] = '\0';
 }
 
-uint32_t	*compute_sha1(void *in, size_t len) // Len is in bytes
+uint32_t	*compute_sha1(void *in, size_t len)
 {
 	uint32_t			k[80];
 	size_t				n;
@@ -150,8 +89,8 @@ uint32_t	*compute_sha1(void *in, size_t len) // Len is in bytes
 
 uint32_t	*sha1_encode(const void *in, size_t len)
 {
-	size_t		padded_size;
-	void			*tmp;
+	size_t	padded_size;
+	void	*tmp;
 
 	if (!(tmp = sha_padding(in, len, &padded_size)))
 		return (NULL);

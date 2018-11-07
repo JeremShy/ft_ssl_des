@@ -195,8 +195,8 @@ void			base64_enc_from_buf_to_fd(uint8_t *buffer, int buf_size, int output_fd);
 */
 
 uint32_t	*sha1_encode(const void *in, size_t len);
-int				main_sha1(t_opt *opt);
-
+void		compute_round(uint32_t h[5], const uint32_t k[80], const void *m);
+int			main_sha1(t_opt *opt);
 /*
 ** des
 */
