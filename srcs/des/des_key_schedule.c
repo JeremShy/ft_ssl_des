@@ -1,5 +1,4 @@
 #include <ft_ssl.h>
-#include <ft_printf.h>
 
 void	print_block_as_hex(uint64_t in)
 {

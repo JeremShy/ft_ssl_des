@@ -48,7 +48,7 @@ SRC_NAME = \
 
 OBJ_PATH = ./obj/
 
-INC_PATH = ./includes ./libsrcs/libft/includes/ ./libsrcs/vs_printf/includes/
+INC_PATH = ./includes ./libsrcs/libft/includes/
 
 SRC_PATH = ./srcs/
 
@@ -85,7 +85,6 @@ $(LIB_DIR):
 
 $(NAME) : $(OBJ)
 	make -C libsrcs/libft
-	make -C libsrcs/vs_printf
 	$(CC) $(CFLAGS) $(OBJ) -L $(LIB_DIR) $(LFLAGS) -o $@
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
@@ -101,12 +100,10 @@ clean:
 	@rm -fv $(OBJ)
 	@rm -rfv $(OBJ_PATH) 2> /dev/null
 	@make -C libsrcs/libft clean
-	@make -C libsrcs/vs_printf clean
 
 fclean: clean
 	@rm -fv $(NAME)
 	@make -C libsrcs/libft fclean
-	@make -C libsrcs/vs_printf fclean
 	@rmdir lib 2> /dev/null || true
 
 re: fclean all
