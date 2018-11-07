@@ -34,9 +34,10 @@ int	handle_o_opt(t_des *des, t_opt *opt)
 			ft_putendl_fd("Error : Syntax error on -o option", 2);
 			return (0);
 		}
-		if ((des->out_fd = open(opt->o_option, O_WRONLY | O_CREAT | O_TRUNC, 0644)) == -1)
+		if ((des->out_fd = open(opt->o_option, O_WRONLY | O_CREAT
+			| O_TRUNC, 0644)) == -1)
 		{
-			ft_putendl_fd("Error : Could not open output file for writing\n", 2);
+			ft_putstr_fd("Error : Could not open output file for writing", 2);
 			return (0);
 		}
 	}
