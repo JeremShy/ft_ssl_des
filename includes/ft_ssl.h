@@ -178,6 +178,9 @@ typedef struct	s_params_base64 {
 }								t_params_base64;
 
 int				main_base64(t_opt *opt);
+void		print_four_chars(t_params_base64 *params, char *buffer, int *i, int output_fd);
+int8_t		gcv(char *buffer, int i);
+
 void			base64_encode_from_fd(int fd, int output_fd);
 
 void			init_decode_params(t_params_base64 *params);
