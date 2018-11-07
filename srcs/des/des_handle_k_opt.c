@@ -1,30 +1,6 @@
 #include <ft_ssl.h>
 #include <sys/stat.h>
 
-static int	compute_key(t_des *des, t_opt *opt)
-{
-	t_btk_md5_params	params;
-
-	params.salt = des->salt;
-	params.data = (void*)opt->p_option;
-	params.data_len = ft_strlen(opt->p_option);
-	params.key = des->key;
-	params.key_len = 8;
-	params.iv = des->iv;
-	if (des->ived == 0)
-		params.iv_len = 8;
-	else
-		params.iv_len = 0;
-	if (!bytes_to_key_md5(&params))
-	{
-		ft_putendl_fd("Error while trying to generate a key from the password.", 2);
-		return (0);
-	}
-	des->salted = 1;
-	des->ived = 1;
-	return (1);
-}
-
 static int	prepare_decode(t_des *des)
 {
 	if (ft_strncmp((char*)des->decoded_input_data, "Salted__", 8))

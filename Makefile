@@ -32,6 +32,7 @@ SRC_NAME = \
 		des/des_main.c \
 		des/des_init.c \
 		des/des_handle_k_opt.c \
+		des/des_handle_k_opt_2.c \
 		des/des_handle_i_a_opt.c \
 		des/des_globals.c \
 		des/des_encoding.c \

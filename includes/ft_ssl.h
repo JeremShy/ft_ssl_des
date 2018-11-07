@@ -253,6 +253,7 @@ extern const int	g_des_rotl_2[];
 int				handle_v_e_d_opt(t_des *des, t_opt *opt);
 int				handle_i_a_opt(t_des *des, t_opt *opt, int *in_fd);
 int				handle_k_opt(t_des *des, t_opt *opt);
+int				compute_key(t_des *des, t_opt *opt);
 int				handle_o_opt(t_des *des, t_opt *opt);
 int				main_des_ecb(t_opt *opt);
 int				main_des_cbc(t_opt *opt);
