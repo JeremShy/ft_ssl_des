@@ -276,6 +276,8 @@ void			do_xor(uint64_t *ret, uint64_t last_block, uint64_t *in, size_t n);
 */
 int		main_hmac_sha1(t_opt *opt);
 unsigned char	*hmac_sha1_encode(const void *str, int size, const unsigned char *key, size_t keylen);
+void			fill_ipad_opad(size_t keylen, char *k_ipad, char *k_opad, const unsigned char *key);
+
 
 /*
 ** BytesTo_Key md5

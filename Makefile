@@ -50,7 +50,8 @@ SRC_NAME = \
 \
 		bytes_to_key_md5/bytes_to_key_md5.c \
 \
-		hmac_sha1/hmac_sha1_main.c
+		hmac_sha1/hmac_sha1_main.c \
+		hmac_sha1/hmac_sha1_main_2.c
 
 OBJ_PATH = ./obj/
 
