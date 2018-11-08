@@ -38,7 +38,7 @@ static void	print_as_bytes(unsigned const char *start, size_t size, size_t max)
 	}
 }
 
-void print_memory(const void *start, size_t size)
+void		print_memory(const void *start, size_t size)
 {
 	size_t	i;
 
