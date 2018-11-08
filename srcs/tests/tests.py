@@ -88,10 +88,12 @@ def RUN_PARSING_TESTS():
 	check_parse_error([b'des', b'-e', b'-ix'], b'Error while trying to open file for reading.\n')
 	
 	check_parse_error([b'des', b'-e', b'-i.', '-pa'], b"Can't stat input file, or the input file is a folder.\n")
-
 	check_parse_error([b'des', b'-d', b'-i', b'../Makefile', '-kz'], b'Error : Problem while parsing the key\n')
 	check_parse_error([b'des', b'-d', b'-i', b'../Makefile', '-vaz'], b'Error : Problem while parsing the iv\n')
 	check_parse_error([b'des', b'-d', b'-i', b'../Makefile', '-va', '-kz'], b'Error : Problem while parsing the key\n')
+
+	check_parse_error([b'hmac-sha1', b'-k', b'abc', b'-i', 'Makefile'], b"Error : Couldn't open input file or parse error\n")
+	check_parse_error([b'hmac-sha1', b'-i', '../Makefile'], b'Key needed\n')
 
 	os.chdir("..")
 	shutil.rmtree(temp_dir)

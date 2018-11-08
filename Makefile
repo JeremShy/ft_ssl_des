@@ -8,6 +8,7 @@ SRC_NAME = \
 		tools/hex_string_to_bytes.c \
 		tools/permutate.c \
 		tools/pkcs5_padding.c \
+		tools/print_memory.c \
 \
 		md5/md5_main.c \
 		md5/md5_parsing.c \
@@ -45,10 +46,11 @@ SRC_NAME = \
 		sha1/sha1_compute_round.c \
 		sha1/sha1_main.c \
 \
+		pbkdf2_hmac_sha1/pbkdf2_hmac_sha1_main.c \
+\
 		bytes_to_key_md5/bytes_to_key_md5.c \
 \
-		hmac_sha1_main.c \
-		pbkdf2_hmac_sha1.c
+		hmac_sha1/hmac_sha1_main.c
 
 OBJ_PATH = ./obj/
 

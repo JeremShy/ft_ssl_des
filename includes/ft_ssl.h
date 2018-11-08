@@ -70,6 +70,8 @@ void			print_help(void);
 char	*bytes_to_char(uint32_t *in, char *buffer, size_t in_size);
 int	hex_string_to_bytes(const char *str, unsigned char *out, size_t size);
 
+void		print_memory(const void *start, size_t size);
+
 uint8_t	*pkcs5_padding(const uint8_t *original_data, size_t *size, size_t padd_multiple);
 
 int8_t	permutate(const int8_t *in, int8_t *out, const int *permutation, size_t size);
