@@ -1,7 +1,11 @@
 SRC_NAME = \
 		main.c \
 		get_file.c \
-		parsing.c \
+\
+		parsing/parsing_main.c \
+		parsing/parsing_set_opt.c \
+		parsing/parsing_parametrized_opt.c \
+		parsing/parsing_printing.c \
 \
 		tools/bitwise_operations.c \
 		tools/general_operations.c \

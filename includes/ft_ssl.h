@@ -76,7 +76,23 @@ uint8_t	*pkcs5_padding(const uint8_t *original_data, size_t *size, size_t padd_m
 
 int8_t	permutate(const int8_t *in, int8_t *out, const int *permutation, size_t size);
 
+
 /*
+	** PARSING
+*/
+
+int	print_str_and_ret(char *str1, char c);
+int	has_argument(char c, int (*fun) (t_opt*));
+
+int	set_opt_contents(t_opt *opt, int (*fun) (t_opt*), char *option, int i);
+
+int		handle_parametrized_opt(char **av, int *i, t_opt *opt, int (*fun)(t_opt*));
+
+int	print_str_and_ret(char *str1, char c);
+int	print_error_and_help(char *wrong_opt);
+
+/*
+
 	** PBKDF2
 */
 
@@ -95,7 +111,7 @@ typedef struct	s_pbkdf2_params
 }				t_pbkdf2_params;
 
 int	pbkdf2_hmac_sha1(t_pbkdf2_params *params);
-
+int	set_opt_flags(char option, t_opt *opt);
 /*
 	** MD5
 */
