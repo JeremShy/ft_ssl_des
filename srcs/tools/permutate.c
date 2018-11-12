@@ -1,20 +1,30 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   permutate.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jcamhi <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/11/12 17:32:02 by jcamhi            #+#    #+#             */
+/*   Updated: 2018/11/12 17:36:34 by jcamhi           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <ft_ssl.h>
 
 /*
-	* Effectuates the permutation given in the permutation on in.
-	* The output is stored in the out parameter. in and out can overlap.
-	* Permutation must be at least size bytes long, in and out must
-	*  be at least size bits long.
-	* The permutation parameter is given as in the FIPS Pub 46-3.
-	*
-	* Params :
-	*  in : input, pointer to a memory address containing at least size bits.
-	*  out : output, same thing
-	*  permutation : permutation array, at least size bytes long
-	*  size : bit size of in and out, byte size of permutation.
-	*   this parameter must be a multiple of 8
-	*
-	* Return value : 1 if successfull, 0 else.
+** Effectuates the permutation given in the permutation on in.
+** The output is stored in the out parameter. in and out can overlap.
+** Permutation must be at least size bytes long, in and out must
+** be at least size bits long.
+** The permutation parameter is given as in the FIPS Pub 46-3.
+** Params :
+** in : input, pointer to a memory address containing at least size bits.
+** out : output, same thing
+** permutation : permutation array, at least size bytes long
+** size : bit size of in and out, byte size of permutation.
+** this parameter must be a multiple of 8
+** Return value : 1 if successfull, 0 else.
 */
 
 int8_t	permutate(const int8_t *in, int8_t *out, const int *permutation,

@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pkcs5_padding.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jcamhi <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/11/12 17:32:04 by jcamhi            #+#    #+#             */
+/*   Updated: 2018/11/12 17:32:04 by jcamhi           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <ft_ssl.h>
 
 /*
-	* Padds the given data according to the pkcs5 specifications.
-	* Dynamically allocates memory, so be sure to free the output when done
-	*  using it.
-	* The new size will be stored in size.
+** Padds the given data according to the pkcs5 specifications.
+** Dynamically allocates memory, so be sure to free the output when done
+**  using it.
+** The new size will be stored in size.
 */
 
 uint8_t	*pkcs5_padding(const uint8_t *original_data,

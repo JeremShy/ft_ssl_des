@@ -1,14 +1,26 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   base64_decode_2.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jcamhi <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/11/12 17:30:52 by jcamhi            #+#    #+#             */
+/*   Updated: 2018/11/12 17:34:05 by jcamhi           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <ft_ssl.h>
 #define BUFF_SIZE_BASE64 48
 
 /*
-	** Returns the content of the file opened on fd decoded as base64,
-		placed in buf.
-	** If buf is NULL, This function uses malloc to allocate one, and return
-		its size.
-	**  The returned buf then has to be free'd.
-	** If a buf is provided, it must be able to countain at least the size of
-		the decoded output (input_size * 3 / 4).
+** Returns the content of the file opened on fd decoded as base64,
+**  placed in buf.
+** If buf is NULL, This function uses malloc to allocate one, and return
+**  its size.
+** The returned buf then has to be free'd.
+** If a buf is provided, it must be able to countain at least the size of
+**  the decoded output (input_size * 3 / 4).
 */
 
 static uint8_t	*init_buf(int fd)
