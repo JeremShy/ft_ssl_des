@@ -49,7 +49,7 @@ int		main(int argc, char **argv)
 	setvbuf(stdout, NULL, _IONBF, 0);
 	if (argc == 1)
 	{
-		ft_putstr_fd("Usage : not like this\n", 2);
+		print_help();
 		return (1);
 	}
 	if (!parse_options(argc, argv, &opt))
