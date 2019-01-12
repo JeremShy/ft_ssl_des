@@ -37,7 +37,9 @@ int		ft_init(t_params_md5 *params, size_t *original_file_size,
 		*fd = open(filename, O_RDONLY);
 		if (*fd < 0)
 		{
-			ft_putstr_fd("Can't open file for reading\n", 2);
+			ft_putstr_fd("Can't open file ", 2);
+			ft_putstr_fd(filename, 2);
+			ft_putstr_fd(" for reading\n", 2);
 			return (0);
 		}
 	}

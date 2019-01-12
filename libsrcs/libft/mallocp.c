@@ -17,7 +17,5 @@ void					*mallocp(size_t size)
 	void	*ret;
 
 	ret = malloc(size);
-	if (!ret)
-		exit(EXIT_FAILURE);
 	return (ret);
 }
