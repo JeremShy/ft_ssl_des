@@ -65,7 +65,7 @@ static void	print_info_64(t_opt *opt)
 	}
 	else
 	{
-		write(1, " ", 1);
+		write(1, "  ", 2);
 		write(1, opt->content, ft_strlen(opt->content));
 	}
 }

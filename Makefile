@@ -67,7 +67,7 @@ NAME = ft_ssl
 CC = gcc
 CFLAGS =  -Wextra -Wall -g
 # CFLAGS =  -Wextra -Wall -Werror -g
-LFLAGS = -lft -lftprintf
+LFLAGS = -lft
 LIB_DIR=./lib/
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
@@ -114,7 +114,7 @@ clean:
 fclean: clean
 	@rm -fv $(NAME)
 	@make -C libsrcs/libft fclean
-	@rmdir lib 2> /dev/null || true
+	@rm -rf lib 2> /dev/null || true
 
 re: fclean all
 
