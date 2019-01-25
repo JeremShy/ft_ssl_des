@@ -12,17 +12,17 @@
 
 #include <ft_ssl.h>
 
-static int	in_else(char *ret, int *in_size, int r, char *buffer)
+static char	*in_else(char *ret, int *in_size, int r, char *buffer)
 {
 	char	*tmp;
 
 	tmp = ret;
 	if (!(ret = malloc(*in_size + r)))
-		return (0);
+		return (NULL);
 	ft_memcpy(ret, tmp, *in_size);
 	ft_memcpy(ret + *in_size, buffer, r);
 	free(tmp);
-	return (1);
+	return (ret);
 }
 
 static void	end_of_func(int r, char **ret)
@@ -52,7 +52,7 @@ char		*get_file(int fd, int *in_size)
 		}
 		else
 		{
-			if (!in_else(ret, in_size, r, buffer))
+			if (!(ret = in_else(ret, in_size, r, buffer)))
 				return (NULL);
 		}
 		*in_size += r;
