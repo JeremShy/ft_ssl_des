@@ -65,9 +65,9 @@ def RUN_DES_CBC_TESTS():
 	check_des_cbc(b"133457799BBCDFF1", b"12345689AB000000", b"jcamhi\n", b"\x3c\x13\x1c\x13\xd7\x25\xe7\x42", False, mine=False)
 	check_des_cbc(b"133457799BBCDFF1", b"12345689AB000000", b"Test Using Larger Than One Block-Size Data", b"", False, against_real_one=True)
 
-	check_des_cbc_against_real(b"jcamhi", b"a")
-	check_des_cbc_against_real(b"fwubefoboewbfeowbiofewfioewbfoeiwboefwbifewoifewiobfewoibfewoibefwbfeiw", b"afewihfiewofhewoifheoiw")
-	check_des_cbc_against_real(b"\x01\x02\x01\x02\x01\x02\x01\x02\x01\x02\x01\x02\x01\x02\x03\x04\x03\x04\x03\x04\x00\x01", b"afewihfiewofhewoifheoiw")
+	check_des_cbc_against_real(b"jcamhi", b"a", encrypt_with_mine=True)
+	check_des_cbc_against_real(b"fwubefoboewbfeowbiofewfioewbfoeiwboefwbifewoifewiobfewoibfewoibefwbfeiw", b"afewihfiewofhewoifheoiw", encrypt_with_mine=True)
+	check_des_cbc_against_real(b"\x01\x02\x01\x02\x01\x02\x01\x02\x01\x02\x01\x02\x01\x02\x03\x04\x03\x04\x03\x04\x00\x01", b"afewihfiewofhewoifheoiw", encrypt_with_mine=True)
 
 	check_des_cbc_against_real(b"jcamhi", b"a", encrypt_with_mine=False)
 	check_des_cbc_against_real(b"fwubefoboewbfeowbiofewfioewbfoeiwboefwbifewoifewiobfewoibfewoibefwbfeiw", b"afewihfiewofhewoifheoiw", encrypt_with_mine=False)
@@ -86,7 +86,7 @@ def RUN_PARSING_TESTS():
 
 	check_parse_error([b'dex'], b'Unknown algorithm: dex\n\nStandard commands\n\nMessage Digest commands\nmd5\tsha1\tsha256\tsha512\n\nCipher commands\nbase64\tdes\tdes-cbc\tdes-ecb\n\n')
 	check_parse_error([b'des', b'-e', b'-ix'], b'Error while trying to open file for reading.\n')
-	
+
 	check_parse_error([b'des', b'-e', b'-i.', '-pa'], b"Can't stat input file, or the input file is a folder.\n")
 	check_parse_error([b'des', b'-d', b'-i', b'../Makefile', '-kz'], b'Error : Problem while parsing the key\n')
 	check_parse_error([b'des', b'-d', b'-i', b'../Makefile', '-vaz'], b'Error : Problem while parsing the iv\n')
